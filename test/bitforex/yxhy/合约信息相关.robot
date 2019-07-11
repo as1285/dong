@@ -39,10 +39,8 @@ Library           DateTime
 
 合约信息明细
     ${res}    yxhy_api调用    user_yj1    /swap/contract/contractDetail/swap-usd-btc
-    log    ${res}    error
     should be equal as strings    ${res['code']}    200
     ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_contract_config` where symbol='swap-usd-btc'
-    log    ${ret_mysql}    error
     should be equal as strings    ${res['data']['symbol']}    ${ret_mysql[0]['symbol']}
     should be equal as strings    ${res['data']['endDate']}    永续
     should be equal as strings    ${res['data']['baseSymbol']}    ${ret_mysql[0]['base_symbol']}
