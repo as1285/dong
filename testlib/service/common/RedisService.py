@@ -8,9 +8,6 @@ from testlib.utils.env.service import ServiceRepository
 class RedisService:
     ROBOT_LIBRARY_SCOPE = "GLOBAL"
 
-    def instance_id(self, alias):
-        return ServiceRepository().get(alias).instanceId
-
     def flush_all(self, alias):
         "Delete all keys in all databases on the current host"
         ServiceRepository().get(alias).flush_all()

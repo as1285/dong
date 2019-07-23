@@ -1,6 +1,7 @@
 *** Settings ***
 Resource          ../../keywords/bitforex/yxhy.robot
 Resource          ../../keywords/basic/mysql.robot
+Resource          ../../keywords/basic/redis.robot
 Resource          ../../keywords/basic/util.robot
 Library           DateTime
 
