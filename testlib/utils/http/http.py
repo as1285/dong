@@ -16,7 +16,7 @@ def re_try_while_error_occured(times, interval):
         def __re_try(*args, **kargs):
             for index in range(times):
                 http_result = func(*args, **kargs)
-                if http_result.success or getattr(HttpResult, 'code', INVALID_CODE) in NOT_RE_TRY_CODES:
+                if http_result.success:
                     break
                 else:
                     logger.info(u'error is {0}, sleep: {1}seconds, and try again'.format(HttpResult.error, interval))

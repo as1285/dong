@@ -16,9 +16,6 @@ class Redis(Service):
         self._passwd = env_dict.get('dbpwd', None)
         self._redis = {0: redis.Redis(host=self._ip, port=self._port, password=self._passwd, db=0)}
 
-    def instance_id(self, alias):
-        return Service().get(alias).instanceId
-
     def flush_all(self):
         "Delete all keys in all databases on the current host"
         self._redis[0].flushall()
