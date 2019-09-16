@@ -71,7 +71,7 @@ class Http:
         except Exception as e:
             logger.warn(u'http requests error   : {0}'.format(e))
             traceback.print_exc()
-            http_result.error(e)
+            http_result.error = e
         else:
             HttpParser(self).parse(res, http_result)
         return http_result
