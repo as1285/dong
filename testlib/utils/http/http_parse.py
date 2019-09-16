@@ -33,7 +33,7 @@ class HttpParser:
                 output = json.loads(content)
             except Exception as e:
                 logger.info('body is not json format: {0}'.format(e))
-                http_result.output = None
+                output = None
             http_result.output = output
         except Exception as e:
             logger.info('parse body error: {0}'.format(e))
