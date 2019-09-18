@@ -52,6 +52,13 @@ class qiangping():
         formula.unrealisedPNL(SIDE, Vol, HP, FP)
         print('浮点数比较', float_compare.compare_float(formula.unrealisedPNL(SIDE, Vol, HP, FP), unrealisedPNL, 0.00000001))
         print('回报率',unrealisedPNL/margin)
+        return formula.unrealisedPNL(SIDE, Vol, HP, FP)
+    def return_rate(self):#    回报率
+        account_data = base_data.account()#查询用户账户信息
+        position_data=base_data.position()#查看用户仓位
+        unrealisedPNL=account_data['data']['unrealisedPNL'] 
+        margin=float(position_data['data']['margin'])
+        return unrealisedPNL/margin
     def Rate_of_return(self):
         position_data = base_data.position()
     def margin_rate(self):#保证金率
@@ -162,7 +169,13 @@ class qiangping():
             print(base_data.orderQty)
             print(base_data.buy_order())
 
-
+    def pv(self):#仓位价值
+        position_data=base_data.position()#查看用户仓位
+        Vol=float(position_data['data']['currentPosition'])
+        HP=float(position_data['data']['avgCostPrice'])
+        formula.Vol=Vol
+        formula.HP=HP
+        return formula.pv()
     def send_post(self, url, data, header):
         result = requests.post(url=url, json=data, headers=header)
         return result

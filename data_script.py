@@ -30,7 +30,6 @@ class data_script:
                   }
         user_id_hash = EncryptDecrypt().encrypt(self.uid)
         header["UserId"] = user_id_hash
-        print(header)
         return header
 
     def buy_order(self):#买
@@ -38,6 +37,14 @@ class data_script:
         url = self.get_url(api)
         header = self.header()
         data = {"symbol": self.symbol, "side": 1, "source": "1", "type": 1, "orderQty": self.orderQty, "price": self.price}
+        res = self.run_main('post', url, data, header)
+        print('买单',res.text,data)
+        return res.json()
+    def buy_order_by_param(self,orderQty,price):#下买单传参数
+        api = 'contract/swap/order'
+        url = self.get_url(api)
+        header = self.header()
+        data = {"symbol": self.symbol, "side": 1, "source": "1", "type": 1, "orderQty": orderQty, "price": price}
         res = self.run_main('post', url, data, header)
         print('买单',res.text,data)
         return res.json()
@@ -121,14 +128,19 @@ class data_script:
         res = self.run_main('delete', url, data, header)
         print(res.text,data)
         return res.json()
-    def order_list(self):#订单列表
-        api="/contract/swap/order/list/swap-usd-btc?page=1&size=20"
+    def order_list(self):#委托列表
+        api="contract/swap/order/list/swap-usd-btc"
         url = self.get_url(api)
         header = self.header()
         data={}
         res = self.run_main('get', url, data, header)
-        print('订单列表',res.text,data)
+        print('委托列表',res.text,data)
         return res.json()
+    def order_list_num(self):#委托列表数量
+        res=self.order_list()
+        volume=res['data']['pageData'][0]["volume"]
+        side=res['data']['pageData'][0]["side"]
+        return volume
 
 
     def send_post(self, url, data, header):
@@ -148,16 +160,12 @@ class data_script:
         try:
             if method == 'post':
                 result = self.send_post(url, data, header)
-                print(result.json())
             elif method == 'get':
                 result = self.send_get(url, data, header)
-                print(result.json())
             elif method == 'delete':
                 result = self.send_delete(url, data, header)
-                print(result.json())
             else:
                 print("请求方式错误")
-
             return result
         except:
             return result
@@ -167,9 +175,7 @@ class data_script:
         header = self.header()
         data={}
         res = self.run_main('get', url, data, header)
-        print(res.text)
         indexPrice=res.json()["data"]["indexPrice"]#获取指数价格
-        print(indexPrice)
         buyprice = float(indexPrice[:-2])
         for i  in  range(n):
             sellprice=buyprice-5
@@ -274,19 +280,27 @@ class data_script:
         res = self.run_main('get', url, data, header)
         print('资金费用收取列表',res.text)
         return res.json()
+    def mkapi(self):#成交量信息
+        api='/contract/mkapi/v2/tickers'
+        url = self.get_url(api)
+        header = self.header()
+        data={}
+        res = self.run_main('get', url, data, header)
+        print('成交量信息',res.text)
+        return res.json()
 
 
 if __name__ == "__main__":
     run = data_script()
     run.host = 'http://192.168.199.151/'
-    run.uid='2195585'
+    run.uid='2195580'
     # user_ids = MySQLOperate("m_user").execute_sql("select user_id from m_user.us_user_baseinfo")
     # user_list=[]
     run.price="9760.5"#下单价格
     # run.orderQty=str(random.randint(1,9))#单数量
     run.orderQty=1
     run.symbol="swap-usd-btc"#币种对
-    run.buy_order()
+    run.mkapi()
     # sleep(1)
     # run.position()
     #run.account_fundList()
