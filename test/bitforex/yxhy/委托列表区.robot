@@ -9,3 +9,4 @@ Library             DateTime
 委托列表-买入委托的排序方式
 high 卖一价
 low  买一价
+last 最新价

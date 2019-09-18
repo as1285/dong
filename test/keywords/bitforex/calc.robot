@@ -316,4 +316,28 @@ Library           qiangping.py
     ...    result:
     ${result}    order list num
     [Return]    ${result}
+根据买一价卖一价下单
+    [Arguments]     ${side}
+    [Documentation]  【功能】根据买一价，卖一价下单
+    ...
+    ...    【参数】${side}
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}    order by OP        ${side}
+    [Return]    ${result}
+从Exce表里获取数据
+     [Arguments]     ${symbol}      ${vol}
+    [Documentation]  【功能】从Exce表里获取数据
+    ...
+    ...    【参数】${symbol}      ${vol}
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}   data    ${symbol}      ${vol}
+    [Return]    ${result}
 

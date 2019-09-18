@@ -1,8 +1,9 @@
 import xlrd#全部读取某条case所有的值存放在字典里面
 
 class ExcelUtil():
-    def __init__(self, excelPath, sheetName="Sheet1"):
-        self.data = xlrd.open_workbook(excelPath)
+    def __init__(self,filePath = "case.xls",sheetName="Sheet1"):
+        self.excelPath=None
+        self.data = xlrd.open_workbook(filePath)
         self.table = self.data.sheet_by_name(sheetName)
         # 获取第一行作为key值
         self.keys = self.table.row_values(0)
@@ -26,11 +27,9 @@ class ExcelUtil():
                     s[self.keys[x]] = values[x]
                 r.append(s)
                 j += 1
+            print(r)
             return r
-
 if __name__ == "__main__":
-    filepath = "D:/dong/APIRun/case/case.xls"
-    sheetName = "Sheet1"
-    data = ExcelUtil(filepath, sheetName)
-    print(data.dict_data())
-    a=data.dict_data()
+    run=ExcelUtil()
+    run.dict_data()
+

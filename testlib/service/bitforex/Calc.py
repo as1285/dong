@@ -5,13 +5,13 @@ R = 0.0006 #提取方流动性手续费率
 M = 0.0004 #提取方流动性手续费率
 feeRateMaker=0.0004  #挂单手续费
 feeRateTaker=0.0006  #吃单手续费
+MMR=0
+IMR=0
 # IMR = 0.02=风险限额等级*0.01=RL*0.01 #起始保证金率
 # MMR = 0.005 #维持保证金率
+from testlib.conf.readexcel import ExcelUtil
 class Calc:
-    global IMR
-    global MMR
-    IMR = 0.01  # 起始保证金率
-    MMR = 0.005  # 维持保证金率
+
 
 
     ROBOT_LIBRARY_SCOPE = "GLOBAL"
@@ -26,8 +26,38 @@ class Calc:
         self.R=None
         self.OP=None # 委托价格
         self.nextFundTime=None
-    def rate(self):#合约数量不同，杠杆不同
-        pass
+        self.symbol = "swap-usd-btc"
+        self.MMR=0.005
+        self.IMR=0.01
+    def data_load(self,symbol):
+        run=ExcelUtil()
+        data=run.dict_data()
+        data_btc=data[0:10]
+        data_eth=data[11:20]
+        data_ltc=data[21:30]
+        data_xrp=data[31:40]
+        data_grin=data[41:50]
+        if symbol=="swap-usd-btc":
+            return data_btc
+        if symbol=="swap-usd-eth":
+            return data_eth
+        if symbol=="swap-usd-ltc":
+            return data_ltc
+        if symbol=="swap-usd-xrp":
+            return data_xrp
+        if symbol=="swap-usd-grin":
+            return data_grin
+    def data(self,symbol,vol):#从Exce表里获取数据
+        datas=self.data_load(symbol)
+        for data in datas:
+            vol_num=data['合约数量'].split('-')[-1]
+            if  vol<=vol_num:
+                self.MMR=data['MMR']
+                self.IMR = data['IMR']
+                break
+            return data
+
+
 
     def brp(self, HP, R, Accb, Vol, S, IMR):  # 计算破产价格
         brp_buy = HP * (R + 1) / (Accb * HP / Vol * S + (1 + IMR + R))

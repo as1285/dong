@@ -31,6 +31,24 @@ class data_script:
         user_id_hash = EncryptDecrypt().encrypt(self.uid)
         header["UserId"] = user_id_hash
         return header
+    def order_by_OP(self,side):#根据买一价，卖一价下单
+        api = '/contract/mkapi/v2/tickers'
+        url = self.get_url(api)
+        header = self.header()
+        data = {}
+        res = self.run_main('get', url, data, header)
+        print(res.json())
+        price=0
+        if side==1:
+            price = res.json()["data"]["swap-usd-btc"]["high"]  # 卖一价
+        if side==2:
+            price = res.json()["data"]["swap-usd-btc"]["low"]  # 卖一价
+        api ='contract/swap/order'
+        data={"symbol": self.symbol, "side": side, "source": "1", "type": 1, "orderQty": self.orderQty, "price": price}
+        url=self.get_url(api)
+        res = self.run_main('get', url, data, header)
+        print('根据买一价，卖一价下单',res.json(),data)
+        return res.json()
 
     def buy_order(self):#买
         api = 'contract/swap/order'
@@ -170,22 +188,19 @@ class data_script:
         except:
             return result
     def createdatalist(self,n):#跑单
-        api="contract/swap/contract/commonInfo/swap-usd-btc"
+        api='/contract/mkapi/v2/tickers'
         url = self.get_url(api)
         header = self.header()
         data={}
         res = self.run_main('get', url, data, header)
-        indexPrice=res.json()["data"]["indexPrice"]#获取指数价格
-        buyprice = float(indexPrice[:-2])
+        buyprice=res.json()["data"]["swap-usd-btc"]["high"]#卖一价
+        sellprice=res.json()["data"]["swap-usd-btc"]["low"]#卖一价
         for i  in  range(n):
-            sellprice=buyprice-5
-            sellprice+=0.5
-            buyprice+=0.5
-            self.buyprice=str(buyprice)
+            self.price=str(buyprice)
             message1=self.buy_order()["message"]
             if message1 =="委托失败! 超过最大持仓上限！":
                 self.delete_order_all()
-            self.sellprice=str(sellprice)
+            self.price=str(sellprice)
             message2 = self.sell_order()["message"]
             if message2 =="委托失败! 超过最大持仓上限！":
                 self.delete_order_all()
@@ -296,14 +311,13 @@ if __name__ == "__main__":
     run.uid='2195580'
     # user_ids = MySQLOperate("m_user").execute_sql("select user_id from m_user.us_user_baseinfo")
     # user_list=[]
-    run.price="9760.5"#下单价格
+    # run.price="9760.5"#下单价格
     # run.orderQty=str(random.randint(1,9))#单数量
     run.orderQty=1
     run.symbol="swap-usd-btc"#币种对
-    run.mkapi()
-    # sleep(1)
-    # run.position()
-    #run.account_fundList()
+    run.order_by_OP(1)
+
+
     # print('{:.8f}'.format(4.27167877E-8) ,4.27167877E-8/0.00010679)
     # run.sellprice="10239"
     # for i in user_ids[-20:-1]:
