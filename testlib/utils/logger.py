@@ -12,6 +12,7 @@ def get_logger():
         os.mkdir(log_path)
     log_file = os.path.join(log_path, 'autotest.log')
     my_logger = logging.getLogger('autotest')
+    my_logger.propagate = True
     my_logger.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s")
     fhandler = logging.handlers.RotatingFileHandler(log_file, encoding='utf-8', maxBytes=10*1024*1024, backupCount=50)

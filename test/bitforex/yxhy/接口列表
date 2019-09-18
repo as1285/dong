@@ -1,0 +1,42 @@
+/server/userFund.act?cmd=getDigitalCoinInfos 所有币种列表
+/contract/swap/contract/contractDetail/swap-usd-btc? 合约信息明细
+ContractInfoVO  baseLoanRate 基础货币利率
+number  basePrecision  基础货币精度
+int32  baseShowPrecision 前端展示单位
+int32 baseSymbol  基础货币符号
+string  contractFactor  合约乘数
+number contractType 合约类型
+string deepJoinNum 合并深度
+string depthConfig
+string endDate 到期时间
+string feeRateMaker maker手续费
+number feeRateTaker  taker手续费
+number  flagPrice 标记价格
+number fundRate  资金费率
+number fundRatePeriod  资金费率间隔
+number iniMargins 起始保证金
+number isAutoReduce 是否使用自动减仓
+boolean limitQuota 风险限额
+number maintenanceMargins 维持保证金
+number maxDelegateNum 最大委托数量
+int32 maxUserVolume最大用户持仓数量
+int32 minChangePrice 最小价格变化
+number minDelegateNum最小合约数目
+int32 nextFundRateTime 下一个资金费用时间
+int64  notBalanceNum 未平仓合约数
+int64 openBuyLimitRateMax 开仓买单限价最大比例
+number openBuyLimitRateMin 开仓买单限价最小比例
+number openSellLimitRateMax开仓卖单限价最大比例
+number openSellLimitRateMin开仓卖单限价最小比例
+number premiumSymbol 资金费用溢价符号
+string priceOrderPrecision 下单单位
+int32 pricePrecision价格精度
+int32  priceSymbol 计价货币符号
+string   quotaLoanRate 计价货币利率
+number symbol 合约代码
+string  message
+string
+/contract/swap/account/sumFound 得到用户资产的汇总
+equitySum
+账户总权益,折合btc
+{"equity":0.99999704,"accb":1.00000050,"breakevened":2.800000000E-7,"frozen":0E-16,"positionMargin":0.0000010364720837,"availableBalance":0.99999600,"canWithdrawAmount":2.2E-7,"unrealisedPNL":-0.00000345744975400000000000000000}

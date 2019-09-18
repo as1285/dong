@@ -34,3 +34,6 @@ Library           DateTime
     ${orderId}    set variable    ${res['data']}
     ${res}    yxhy_api调用    user_yj1    /swap/order    method=delete    orderId=${orderId}    price=${price}    source=${source}    symbol=${symbol}
     should be equal as strings    ${res['code']}    200
+    log  --loglevel DEBUG:DEBUG
+
+
