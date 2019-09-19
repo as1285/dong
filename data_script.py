@@ -287,6 +287,15 @@ class data_script:
         res = self.run_main('get', url, data, header)
         print('获取指数价格标记价格',res.text)
         return res.json()
+    def get_flagprice(self):#获取标记价格
+        return self.commonInfo()["data"]["flagPrice"]
+    def get_indexprice(self):#获取指数价格
+        return self.commonInfo()["data"]["indexPrice"]
+    def  ULP_LLP(self,side):#委托限价
+            if  side=='1':
+                return self.get_flagprice()(1+0.02)
+            else:
+                return self.get_flagprice()(1-0.02)
     def account_fundList(self):#资金费用收取列表
         api='swap/contract/list'
         url = self.get_url(api)
@@ -303,7 +312,24 @@ class data_script:
         res = self.run_main('get', url, data, header)
         print('成交量信息',res.text)
         return res.json()
-
+    def orderSelf(self):#自成交
+        api='swap/orderSelf/'
+        url = self.get_url(api)
+        header = self.header()
+        data={"symbol": "swap-usd-btc", "side": 1, "source": "1", "type": 1, "orderQty": 1,"price": 9800.0}
+        res = self.run_main('delete', url, data, header)
+        print('成交量信息',res.text)
+        return res.json()
+    def listAll(self):#合约所以币对信息
+        api='contract/swap/contract/listAll'
+        url = self.get_url(api)
+        header = self.header()
+        data={}
+        res = self.run_main('get', url, data, header)
+        print('合约所以币对信息',res.text)
+        for i  in res.json()['data']:
+            print(i)
+        return res.json()
 
 if __name__ == "__main__":
     run = data_script()
@@ -311,11 +337,11 @@ if __name__ == "__main__":
     run.uid='2195580'
     # user_ids = MySQLOperate("m_user").execute_sql("select user_id from m_user.us_user_baseinfo")
     # user_list=[]
-    # run.price="9760.5"#下单价格
+    run.price="9760.5"#下单价格
     # run.orderQty=str(random.randint(1,9))#单数量
     run.orderQty=1
     run.symbol="swap-usd-btc"#币种对
-    run.order_by_OP(1)
+    run.listAll()
 
 
     # print('{:.8f}'.format(4.27167877E-8) ,4.27167877E-8/0.00010679)

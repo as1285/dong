@@ -340,4 +340,39 @@ Library           qiangping.py
     ...    result:
     ${result}   data    ${symbol}      ${vol}
     [Return]    ${result}
-
+获取标记价格
+     [Arguments]
+    [Documentation]  【功能】获取标记价格
+    ...
+    ...    【参数】
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}   get_flagprice
+    [Return]    ${result}
+获取指数价格
+     [Arguments]
+    [Documentation]  【功能】获取指数价格
+    ...
+    ...    【参数】
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}   get_indexprice
+    [Return]    ${result}
+委托限价
+     [Arguments]  ${side}
+    [Documentation]  【功能】获取指数价格
+    ...
+    ...    【参数】${side}
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}  ULP_LLP     ${side}
+    [Return]    ${result}
