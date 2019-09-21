@@ -4,7 +4,12 @@ Library           ../../../testlib/service/bitforex/Calc.py
 Library           ../../../testlib/service/common/MysqlService.py
 Library           data_script.py
 Library           qiangping.py
-
+Resource            ../../keywords/bitforex/yxhy.robot
+Resource            ../../keywords/bitforex/calc.robot
+Resource            ../../keywords/basic/mysql.robot
+Resource            ../../keywords/basic/util.robot
+Resource            ../../keywords/basic/redis.robot
+Library             DateTime
 *** Keywords ***
 计算破产价格
     [Arguments]    ${HP}    ${R}    ${Accb}    ${Vol}    ${S}    ${IMR}
@@ -375,4 +380,31 @@ Library           qiangping.py
     ...    【返回值】
     ...    result:
     ${result}  ULP_LLP     ${side}
+    [Return]    ${result}
+
+杠杆合约倍数配置
+     [Arguments]  ${symbol}
+    [Documentation]  【功能】杠杆合约倍数配置
+    ...
+    ...    【参数】${symbol}
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${ret_mysql}    执行指定SQL语句并获取字典形式结果  select * from `p_perpetual`.`pp_contract_risk_level_config ` where symbol='${symbol}'
+    [Return]    ${ret_mysql}
+
+
+委托列表获取订单ID集合
+     [Arguments]
+    [Documentation]  【功能】委托列表获取订单ID集合
+    ...
+    ...    【参数】
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}  get_orderids
     [Return]    ${result}

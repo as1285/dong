@@ -154,6 +154,12 @@ class data_script:
         res = self.run_main('get', url, data, header)
         print('委托列表',res.text,data)
         return res.json()
+    def  get_orderids(self):#委托列表获取订单ID集合
+        res=self.order_list()
+        orderids=[]
+        for i in range(len(res['data']['pageData'])):
+            orderids.append(['data']['pageData'][i]['entrustId'])
+        return orderids
     def order_list_num(self):#委托列表数量
         res=self.order_list()
         volume=res['data']['pageData'][0]["volume"]

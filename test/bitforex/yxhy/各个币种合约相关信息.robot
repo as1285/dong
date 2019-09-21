@@ -62,5 +62,55 @@ Library             DateTime
     should be equal   ${symbolid3}    10004
     should be equal   ${symbolid4}    10211
     should be equal   ${symbolid5}    10258
+    should be equal  ${initMargins1} 0.01
+    should be equal  ${initMargins2} 0.01
+    should be equal  ${initMargins3} 0.01
+    should be equal  ${initMargins4} 0.01
+    should be equal  ${initMargins5} 0.01
+
+    should be equal  ${leverageLevel1}  100
+
+    should be equal  ${leverageLevel5}  100
+
+    should be equal  ${leverageLevel5}  100
+
+    should be equal  ${leverageLevel5}  25
+
+    should be equal  ${leverageLevel5}  10
+
+    should be equal  ${maxOrderVolume1}  2000000
+    should be equal  ${maxOrderVolume2}  350000
+    should be equal  ${maxOrderVolume3}  400000
+    should be equal  ${maxOrderVolume4}  100000
+    should be equal  ${maxOrderVolume5}  40000
+合约最大持仓量
+    ${res}    yxhy_api调用    user_yj1    contract/swap/contract/listAll
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+
+    ${symbol1}       set variable     ${res['data'][0]['symbol']}
+    ${maxOrderVolume1}            set variable     ${res['data'][0]['maxOrderVolume']}
+
+    ${leverageLevel1}            set variable     ${res['data'][0]['leverageLevel']}
+
+    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_contract_risk_level_config ` where symbol='${symbol1} ' and max_user_leverage='${leverageLevel1}'
+    ${max_volume}    set variable    ${ret_mysql[0]['max_volume']}
+
+    should be equal   ${max_volume}         ${maxOrderVolume1}
+
+杠杆合约倍数数据
+
+     ${symbol1}       set variable      swap-usd-btc
+     ${ret_mysql}            杠杆合约倍数配置       ${symbol1}
+     ${min_volume}       set variable        ${ret_mysql[0]['min_volume']}
+     ${max_volume}       set variable        ${ret_mysql[0]['max_volume']}
+     ${init_margins}       set variable        ${ret_mysql[0]['init_margins']}
+     ${maintenance_margins}       set variable        ${ret_mysql[0]['maintenance_margins']}
+     ${max_user_leverage}       set variable        ${ret_mysql[0]['max_user_leverage']}
+
+
+
+
 
 
