@@ -63,9 +63,9 @@ class Calc:
         brp_buy = HP * (R + 1) / (Accb * HP / Vol * S + (1 + IMR + R))
         brp_sell = HP * (R - 1) / (Accb * HP / Vol * S + (IMR + R - 1))
         return brp_buy, brp_sell
-    def Brp(self):  # 计算破产价格
-        brp_buy = self.HP * (R + 1) / (self.Accb * self.HP / self.Vol * S + (1 + IMR + R))
-        brp_sell = self.HP * (R - 1) / (self.Accb * self.HP / self.Vol * S + (IMR + R - 1))
+    # def Brp(self):  # 计算破产价格
+    #     brp_buy = self.HP * (R + 1) / (self.Accb * self.HP / self.Vol * S + (1 + IMR + R))
+    #     brp_sell = self.HP * (R - 1) / (self.Accb * self.HP / self.Vol * S + (IMR + R - 1))
         return brp_buy, brp_sell
 
     def cal_liqp(self, HP, R, Accb, Vol, SIDE):

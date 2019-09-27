@@ -15,9 +15,9 @@ class Yxhy(Bitforex):
 
     def init_env(self, env_dict=None):
         super().init_env(env_dict=env_dict)
-        # self.headers()
 
-    # def user_get(self):
-    #     return self.env_dict.get('user')
+    def query(self, path, method='get', need_session=True, timeout=None, params=None, **data):
+        self.headers_create()
+        return super().query(path, method=method, need_session=need_session, timeout=timeout, params=params, **data)
 
 

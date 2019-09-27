@@ -59,7 +59,7 @@ Library             DateTime
     should be true   ${res}
     log  ${res}
     ${user_id}    获取user_id    user_yj1
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_assets` where u_id='${user_id}' and contract_id='10002'
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_assets` where u_id='${user_id}' and contract_id='10002'
     ${frozen_margin}    set variable    ${ret_mysql[0]['frozen_margin']}
     ${result}    浮点数比较    ${res}     ${frozen_margin}    ${0.00001}
 

@@ -7,8 +7,8 @@ Resource          ../../keywords/basic/util.robot
 Library           DateTime
 
 *** Test Cases ***
-账户信息
-    ${res}    yxhy_api调用    user_yj1    /swap/account/swap-usd-btc
+账户信息1
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/account/swap-usd-btc
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${accb}    set variable    ${res['data']['accb']}
@@ -16,7 +16,7 @@ Library           DateTime
     ${frozen}    set variable    ${res['data']['frozen']}
     ${positionMargin}    set variable    ${res['data']['positionMargin']}
     ${user_id}    获取user_id    user_yj1
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_assets` where u_id='${user_id}' and contract_id='10002'
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_assets` where u_id='${user_id}' and contract_id='10002'
     ${realised_pnl}    set variable    ${ret_mysql[0]['realised_pnl']}
     ${position_margin}    set variable    ${ret_mysql[0]['position_margin']}
     ${frozen_margin}    set variable    ${ret_mysql[0]['frozen_margin']}
@@ -42,7 +42,7 @@ Library           DateTime
 合约信息明细
     ${res}    yxhy_api调用    user_yj1    /swap/contract/contractDetail/swap-usd-btc
     should be equal as strings    ${res['code']}    200
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_contract_config` where symbol='swap-usd-btc'
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_contract_config` where symbol='swap-usd-btc'
     should be equal as strings    ${res['data']['symbol']}    ${ret_mysql[0]['symbol']}
     should be equal as strings    ${res['data']['endDate']}    永续
     should be equal as strings    ${res['data']['baseSymbol']}    ${ret_mysql[0]['base_symbol']}
