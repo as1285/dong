@@ -94,7 +94,7 @@ Library             DateTime
 
     ${leverageLevel1}            set variable     ${res['data'][0]['leverageLevel']}
 
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_contract_risk_level_config ` where symbol='${symbol1} ' and max_user_leverage='${leverageLevel1}'
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_contract_risk_level_config ` where symbol='${symbol1} ' and max_user_leverage='${leverageLevel1}'
     ${max_volume}    set variable    ${ret_mysql[0]['max_volume']}
 
     should be equal   ${max_volume}         ${maxOrderVolume1}

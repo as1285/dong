@@ -70,7 +70,7 @@ Library           DateTime
 #    ${availableBalance}    set variable    ${res['data']['availableBalance']}
 #    #风险率 = (维持保证金 / 账户权益) * 100%
 #    ${user_id}    获取user_id    user_yj1
-#    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_assets` where u_id='${user_id}' and contract_id='10002'
+#    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_assets` where u_id='${user_id}' and contract_id='10002'
 #    ${realised_pnl}    set variable    ${ret_mysql[0]['realised_pnl']}
 #    ${position_margin}    set variable    ${ret_mysql[0]['position_margin']}
 #    ${frozen_margin}    set variable    ${ret_mysql[0]['frozen_margin']}

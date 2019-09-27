@@ -24,7 +24,7 @@ Library             DateTime
     should be equal as strings    ${code}    200
     ${orderid}    set variable        ${res['data']}
     ${user_id}    获取user_id    user_yj1
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where u_id='${user_id}' and d=' ${orderid}'
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where u_id='${user_id}' and d=' ${orderid}'
     ${side}    set variable    ${ret_mysql[0]['side']}
     ${volume}    set variable    ${ret_mysql[0]['volume']}
     ${deal_volume}    set variable    ${ret_mysql[0]['deal_volume']}
@@ -51,7 +51,7 @@ Library             DateTime
 
     should be equal  ${side1}  ${side}
     ${user_id}    获取user_id    user_yj1
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where u_id='${user_id}' and d=' ${orderid}'
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where u_id='${user_id}' and d=' ${orderid}'
     ${side2}    set variable    ${ret_mysql[0]['side']}
     should be equal   ${side2}   ${side1}
 委托保证金的计算是否正确

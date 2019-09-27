@@ -22,7 +22,7 @@ Library             DateTime
     should be equal as strings    ${code}    200
     ${orderid}    set variable        ${res['data']}
     ${user_id}    获取user_id    user_yj1
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where u_id='${user_id}' and d=' ${orderid}'
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where u_id='${user_id}' and d=' ${orderid}'
     ${side1}    set variable    ${ret_mysql[0]['side']}
     ${price1}   set variable    ${ret_mysql[0]['price']}
     ${deal_volume}   set variable    ${ret_mysql[0]['deal_volume']}
@@ -52,7 +52,7 @@ Library             DateTime
     log    ${res['code']}
     should be equal as strings    ${code}    200
 
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where id='${orderId}'
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where id='${orderId}'
     ${status}    set variable    ${ret_mysql[0]['status']}
     ${price1}   set variable    ${ret_mysql[0]['price']}
     ${volume1}   set variable    ${ret_mysql[0]['volume']}
@@ -99,7 +99,7 @@ Library             DateTime
     ${orderId}    set variable   ${none}
     evaluate  for ${orderId} in ${orderIds}
 
-        ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where id='${orderId}'
+        ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where id='${orderId}'
         ${status}    set variable    ${ret_mysql[0]['status']}
 
         should be equal  ${status}   4

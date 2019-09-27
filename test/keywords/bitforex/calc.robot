@@ -392,7 +392,7 @@ Library             DateTime
     ...
     ...    【返回值】
     ...    result:
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果  select * from `p_perpetual`.`pp_contract_risk_level_config ` where symbol='${symbol}'
+    ${ret_mysql}    根据SQL进行查询  select * from `p_perpetual`.`pp_contract_risk_level_config ` where symbol='${symbol}'
     [Return]    ${ret_mysql}
 
 
