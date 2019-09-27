@@ -31,7 +31,7 @@ class data_script:
         user_id_hash = EncryptDecrypt().encrypt(self.uid)
         header["UserId"] = user_id_hash
         return header
-    def order_by_OP(self,side):#根据买一价，卖一价下单
+    def order_by_OP(self,side,orderQty,symbol):#根据买一价，卖一价下单
         api = '/contract/mkapi/v2/tickers'
         url = self.get_url(api)
         header = self.header()
@@ -44,7 +44,7 @@ class data_script:
         if side==2:
             price = res.json()["data"]["swap-usd-btc"]["low"]  # 卖一价
         api ='contract/swap/order'
-        data={"symbol": self.symbol, "side": side, "source": "1", "type": 1, "orderQty": self.orderQty, "price": price}
+        data={"symbol": symbol, "side": side, "source": "1", "type": 1, "orderQty": orderQty, "price": price}
         url=self.get_url(api)
         res = self.run_main('get', url, data, header)
         print('根据买一价，卖一价下单',res.json(),data)
@@ -58,11 +58,11 @@ class data_script:
         res = self.run_main('post', url, data, header)
         print('买单',res.text,data)
         return res.json()
-    def buy_order_by_param(self,orderQty,price):#下买单传参数
+    def order_by_param(self,side,orderQty,price):#下单传参数
         api = 'contract/swap/order'
         url = self.get_url(api)
         header = self.header()
-        data = {"symbol": self.symbol, "side": 1, "source": "1", "type": 1, "orderQty": orderQty, "price": price}
+        data = {"symbol": self.symbol, "side": side, "source": "1", "type": 1, "orderQty": orderQty, "price": price}
         res = self.run_main('post', url, data, header)
         print('买单',res.text,data)
         return res.json()
@@ -256,6 +256,7 @@ class data_script:
         data={}
         res = self.run_main('get', url, data, header)
         print(res.text)
+        return res.json()
     def getChannelUser(self):#获取用户信息
         api='swap/commission/getChannelUser'
         url = self.get_url(api)
@@ -277,6 +278,7 @@ class data_script:
         data={}
         res = self.run_main('get', url, data, header)
         print(res.text)
+        return res.json()
     def position(self):#用户持仓
         api='/contract/swap/position/swap-usd-btc'
         url = self.get_url(api)
@@ -347,7 +349,7 @@ if __name__ == "__main__":
     # run.orderQty=str(random.randint(1,9))#单数量
     run.orderQty=1
     run.symbol="swap-usd-btc"#币种对
-    run.listAll()
+    run.position()
 
 
     # print('{:.8f}'.format(4.27167877E-8) ,4.27167877E-8/0.00010679)

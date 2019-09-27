@@ -9,7 +9,7 @@ Library           DateTime
 *** Test Cases ***
 下买多单然后平空计算收益
     ${res}    yxhy_api调用    user_yj1    /contract/swap/order/trade/swap-usd-btc
-#    查询已成交的合约信息
+    #查询已成交的合约信息
     should be equal as strings    ${res['code']}    200
     ${orderId}    set variable    ${res['data']['pageData'][0]['entrustId']}
     ${future}    set variable       ${0}
@@ -83,6 +83,8 @@ Library           DateTime
 #    should be true    ${result}
 #    ${result}    浮点数比较    ${breakevened}    ${realised_pnl}    ${0.00001}
 #    should be true    ${result}
+
+
 
 
 

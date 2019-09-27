@@ -273,8 +273,8 @@ Library             DateTime
     ...    result:
     ${result}    margin
     [Return]    ${result}
-下买单传参数
-    [Arguments]     ${orderQty}     ${price}
+下单传参数
+    [Arguments]     ${side}      ${orderQty}     ${price}
     [Documentation]  【功能】下买单传参数
     ...
     ...    【参数】
@@ -283,7 +283,7 @@ Library             DateTime
     ...
     ...    【返回值】
     ...    result:
-    ${result}    buy order by param     ${orderQty}     ${price}
+    ${result}   order by param     ${side}      ${orderQty}     ${price}
     [Return]    ${result}
 仓位价值
     [Arguments]
@@ -322,7 +322,8 @@ Library             DateTime
     ${result}    order list num
     [Return]    ${result}
 根据买一价卖一价下单
-    [Arguments]     ${side}
+
+    [Arguments]     ${side}    ${orderQty}  ${symbol}
     [Documentation]  【功能】根据买一价，卖一价下单
     ...
     ...    【参数】${side}
@@ -331,7 +332,7 @@ Library             DateTime
     ...
     ...    【返回值】
     ...    result:
-    ${result}    order by OP        ${side}
+    ${result}    order by OP        ${side}    ${orderQty}  ${symbol}
     [Return]    ${result}
 从Exce表里获取数据
      [Arguments]     ${symbol}      ${vol}
@@ -408,3 +409,15 @@ Library             DateTime
     ...    result:
     ${result}  get_orderids
     [Return]    ${result}
+账号初始化，增币
+     [Arguments]  ${id}
+    [Documentation]  【功能】杠杆合约倍数配置
+    ...
+    ...    【参数】${symbol}
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${ret_mysql}    更新指定表中指定数据  update  pp_assets set fixed_asset=100 where u_id=${id}
+    [Return]    ${ret_mysql}

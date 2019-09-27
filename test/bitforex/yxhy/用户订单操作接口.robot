@@ -139,3 +139,109 @@ Library             DateTime
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
     should be equal as strings    ${code}    200
+用户以卖一价购买多单，手续费计算是否正确
+    ${res}    yxhy_api调用        /contract/mkapi/v2/tickers
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${side}         set variable     1
+    ${orderQty}    set variable     1
+    ${price}    set variable    ${res['data']["swap-usd-btc"]["high"]}
+    ${res}      下单传参数       ${side}      ${orderQty}     ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${res}    yxhy_api调用            contract/swap/order/trade/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${fee}    set variable    ${res['data']['pageData'][0]['fee']}
+    ${res}    yxhy_api调用           /contract/swap/position/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${realizedPnl}    set variable    ${res['data']['realizedPnl']}
+    ${pv}    set variable    仓位价值
+    should be true      ${realizedPnl}=${pv}*0.0006
+    should be true      ${realizedPnl}=-${fee}
+
+下委托单之后撤销，查看委托列表是否存在，历史订单里面的记录
+    ${res}    yxhy_api调用        /contract/mkapi/v2/tickers
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${side}         set variable     1
+    ${orderQty}    set variable     1
+    ${price}    set variable    ${res['data']["swap-usd-btc"]["high"]}
+    ${res}      下单传参数       ${side}      ${orderQty}     ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${res}    yxhy_api调用            contract/swap/order/trade/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${orderId}    set variable    ${res['data']}
+    ${res}    yxhy_api调用    user_yj1    /swap/order    method=delete    orderId=${orderId}    price=${price}    source=1   symbol=${symbol}
+    should be equal as strings    ${res['code']}    200
+    ${res}    yxhy_api调用    contract/swap/order/list/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${data}    set variable    ${res['data']['pageDate']}
+    should be empty      ${data}
+    ${res}    yxhy_api调用        /contract/swap/order/history/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${status}    set variable    ${res['data']['pageDate'][0]['status']}
+    should be true     ${status}=4
+
+下单量不叫大的委托单，只成交了部分，把剩下的单取消掉
+    ${res}    yxhy_api调用        /contract/mkapi/v2/tickers
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${side}         set variable     1
+    ${orderQty}    set variable     10000
+    ${price}    set variable    ${res['data']["swap-usd-btc"]["high"]}
+    ${res}      下单传参数       ${side}      ${orderQty}     ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${res}    yxhy_api调用            contract/swap/order/trade/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${orderId}    set variable    ${res['data']}
+    ${res}    yxhy_api调用    user_yj1    /swap/order    method=delete    orderId=${orderId}    price=${price}    source=1   symbol=${symbol}
+    should be equal as strings    ${res['code']}    200
+    ${res}    yxhy_api调用    contract/swap/order/list/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${volume}    set variable    ${res['data']['pageDate'][0]['volume']}
+    ${dealVolume}    set variable    ${res['data']['pageDate'][0]['dealVolume']}
+    should be equal  ${volume}      ${orderQty}
+    ${res}    yxhy_api调用        /contract/swap/order/history/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${status}    set variable    ${res['data']['pageDate'][0]['status']}
+    should be true     ${status}=4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

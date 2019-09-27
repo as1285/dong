@@ -130,6 +130,157 @@ Library             DateTime
     should be equal as strings    ${code}    200
     ${price1}       set variable    ${res['data']["pageData"][0]['price']}
     should be true  ${price}    =   ${price1}
+用户加仓后保证金是否增加
+
+    ${symbol}    set variable       swap-usd-btc
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/position/    symbol=${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${orderQty}      set variable    ${200}
+    ${price}    set variable            获取指数价格
+    ${margin}       set variable    ${res['data']['margin']}
+    ${res}          下买单传参数      ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/position/    symbol=${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${margin1}       set variable    ${res['data']['margin']}
+    should be true  ${margin1} >${margin}
+
+反向开仓数量大于现有仓位
+    ${symbol}       set variable    swap-usd-btc
+    ${side}       set variable    ${1}
+    ${orderQty}      set variable    ${10}
+    ${price}    set variable            获取指数价格
+    ${res}        下单传参数     ${side}  ${orderQty}         ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/position/    symbol=${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${currentPosition}       set variable    ${res['data']['currentPosition']}
+    ${avgCostPrice}       set variable    ${res['data']['avgCostPrice']}
+    ${side}       set variable    ${res['data']['side']}
+    should be equal   ${side}  1
+    should be equal   ${avgCostPrice} ${price}
+    should be equal  ${orderQty}    ${currentPosition}
+    ${side}       set variable    ${2}
+    ${orderQty1}      set variable    ${20}
+    ${price}    set variable            获取指数价格
+    ${res}        下单传参数     ${side}  ${orderQty1}         ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/position/    symbol=${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${currentPosition}       set variable    ${res['data']['currentPosition']}
+    ${avgCostPrice}       set variable    ${res['data']['avgCostPrice']}
+    ${side}       set variable    ${res['data']['side']}
+    should be equal   ${side}  2
+    should be equal   ${avgCostPrice} ${price}
+    should be true  ${orderQty1} - ${orderQty}=  ${currentPosition}
+反向开仓数量少于于现有仓位
+    ${symbol}       set variable    swap-usd-btc
+    ${side}       set variable    ${1}
+    ${orderQty}      set variable    ${10}
+    ${price}    set variable            获取指数价格
+    ${res}        下单传参数     ${side}  ${orderQty}         ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/position/    symbol=${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${currentPosition}       set variable    ${res['data']['currentPosition']}
+    ${avgCostPrice}       set variable    ${res['data']['avgCostPrice']}
+    ${side}       set variable    ${res['data']['side']}
+    should be equal   ${side}  1
+    should be equal   ${avgCostPrice} ${price}
+    should be equal  ${orderQty}    ${currentPosition}
+    ${side}       set variable    ${2}
+    ${orderQty1}      set variable    ${5}
+    ${price}    set variable            获取指数价格
+    ${res}        下单传参数     ${side}  ${orderQty1}         ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/position/    symbol=${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${currentPosition}       set variable    ${res['data']['currentPosition']}
+    ${avgCostPrice}       set variable    ${res['data']['avgCostPrice']}
+    ${side}       set variable    ${res['data']['side']}
+    should be equal   ${side}  1
+    should be equal   ${avgCostPrice} ${price}
+    should be true  ${orderQty} -${orderQty1}=  ${currentPosition}
+[setup]  账号初始化，增币
+买一价购买数量比较大的张数
+    ${symbol}       set variable    swap-usd-btc
+    ${orderQty}     set variable    100000
+    ${res}       根据买一价卖一价下单    1     ${orderQty}    ${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${orderid}    set variable    ${res['data']}
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/position/    symbol=${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${currentPosition}       set variable    ${res['data']['currentPosition']}
+    ${avgCostPrice}       set variable    ${res['data']['avgCostPrice']}
+    ${side}       set variable    ${res['data']['side']}
+    should be equal   ${side}  1
+    SHOULD BE EQUAL  ${currentPosition} 10000
+    ${user_id}    获取user_id    user_yj1      select * from pp_order_btcusdt	 where 	uid=2195580
+    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where where uid=2195580 and id = ${orderid}'
+    ${volume}    set variable    ${ret_mysql[0]['volume']}
+    ${deal_volume}    set variable    ${ret_mysql[0]['deal_volume']}
+    should be true  ${deal_volume} +${volume}=${orderQty}
+
+买一价挂大数量的订单只成交了一部分验证仓位数量和委托数量的关系
+    ${symbol}       set variable    swap-usd-btc
+    ${orderQty}     set variable    100000
+    ${res}       根据买一价卖一价下单    1     ${orderQty}    ${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${orderid}    set variable    ${res['data']}
+    ${res}    yxhy_api调用    user_yj1    /contract/swap/position/    symbol=${symbol}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${currentPosition}       set variable    ${res['data']['currentPosition']}
+    ${side}       set variable    ${res['data']['side']}
+    should be equal   ${side}  1
+    ${user_id}    获取user_id    user_yj1      select * from pp_order_btcusdt	 where 	uid=2195580
+    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where where uid=2195580 and id = ${orderid}'
+    ${volume}    set variable    ${ret_mysql[0]['volume']}
+    ${deal_volume}    set variable    ${ret_mysql[0]['deal_volume']}
+    should be true  ${deal_volume} +${volume}=${orderQty}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
