@@ -231,6 +231,28 @@ Library             DateTime
     should be true     ${status}=4
 
 
+价格需为最小交易价格单位0.5的整数倍
+    ${res}    yxhy_api调用        /contract/mkapi/v2/tickers
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${side}         set variable     1
+    ${orderQty}    set variable     10000
+    ${price}    set variable    ${res['data']["swap-usd-btc"]["high"]}+0.11
+    ${res}      下单传参数       ${side}      ${orderQty}     ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${message}    set variable    ${res['message']}
+    should be equal as strings    ${message}   '价格需为最小交易价格单位0.5的整数倍'
+用户用对手价开仓下买单
+    ${orderQty}    set variable     10
+    ${symbol}    set variable    swap-usd-btc
+    ${side}    set variable     1
+
+
+    ${res}    对手价开单            contract/swap/order/trade/swap-usd-btc
+
 
 
 

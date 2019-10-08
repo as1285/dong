@@ -111,6 +111,26 @@ Library             DateTime
 
 
 
+超過最大下單量限制下單
+    ${res}    yxhy_api调用    user_yj1    swap/contract/listAll
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${orderQty}      set variable    ${res['data'][0]['maxOrderVolume']}+1
+    ${price}        set variable    获取指数价格
+    ${res}          下单传参数       1      ${orderQty}     ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${message}    set variable    ${res['message']}
+    should be equal as strings      ${message}     '下单数量不合法'
+
+
+
+
+
+
+
 
 
 

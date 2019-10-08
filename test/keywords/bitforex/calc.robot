@@ -275,7 +275,7 @@ Library             DateTime
     [Return]    ${result}
 下单传参数
     [Arguments]     ${side}      ${orderQty}     ${price}
-    [Documentation]  【功能】下买单传参数
+    [Documentation]  【功能】下单传参数     ${side}
     ...
     ...    【参数】
     ...
@@ -411,7 +411,7 @@ Library             DateTime
     [Return]    ${result}
 账号初始化，增币
      [Arguments]  ${id}
-    [Documentation]  【功能】杠杆合约倍数配置
+    [Documentation]  【功能】账号初始化，增币
     ...
     ...    【参数】${symbol}
     ...
@@ -419,5 +419,18 @@ Library             DateTime
     ...
     ...    【返回值】
     ...    result:
-    ${ret_mysql}    更新指定表中指定数据  update  pp_assets set fixed_asset=100 where u_id=${id}
+    ${ret_mysql}    执行指定SQL语句  update  pp_assets set fixed_asset=100 where u_id=${id}
     [Return]    ${ret_mysql}
+对手价开单
+     [Arguments]  ${side}  ${symbol}    ${orderQty}
+    [Documentation]  【功能】对手价开单
+    ...
+    ...    【参数】${side}  ${symbol}    ${orderQty}
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${res}    order duishou   ${side}  ${symbol}    ${orderQty}
+    [Return]    ${res}
+

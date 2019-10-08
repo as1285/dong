@@ -78,7 +78,7 @@ Library             DateTime
     should be true    ${result}
     ${orderQty}     set variable    ${vol}
     ${price}            set variable   获取指数价格
-    ${res}     下买单传参数  ${orderQty}     ${price}
+    ${res}     下单传参数     ${side}  ${orderQty}     ${price}
     ${code1}    set variable    ${res1['code']}
     should be equal as strings    ${code1}    200
     ${res}    yxhy_api调用    user_yj1    /swap/position/swap-usd-btc    ${none}    ${True}    ${None}
@@ -88,7 +88,7 @@ Library             DateTime
     ${vol}    set variable    ${res['data']['currentPosition']}
     ${side}    set variable    ${res['data']['side']}
     ${liquidationPrice1}    set variable    ${res['data']['liquidationPrice']}
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_contract_config`
+    ${ret_mysql}    根据SQL进行查询   mysql    select * from `p_perpetual`.`pp_contract_config`
     ${r}    set variable    ${ret_mysql[0]['fee_rate_taker']}
     ${imr}    set variable    ${ret_mysql[0]['init_margins']}
     ${mmr}    set variable    ${ret_mysql[0]['maintenance_margins']}

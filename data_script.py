@@ -58,6 +58,14 @@ class data_script:
         res = self.run_main('post', url, data, header)
         print('买单',res.text,data)
         return res.json()
+    def order_duishou(self,side,symbol,orderQty):#根据对手价买卖单
+        api = 'contract/swap/order'
+        url = self.get_url(api)
+        header = self.header()
+        data = {"symbol": symbol, "side": side, "source": "1", "type": 2, "orderQty": orderQty, "price": 0}
+        res = self.run_main('post', url, data, header)
+        print('根据对手价买卖单',res.text,data)
+        return res.json()
     def order_by_param(self,side,orderQty,price):#下单传参数
         api = 'contract/swap/order'
         url = self.get_url(api)
@@ -287,6 +295,14 @@ class data_script:
         res = self.run_main('get', url, data, header)
         print('用户持仓列表',res.text)
         return res.json()
+    def  duishou(self):#对手价
+        api='contract/swap/position'
+        url = self.get_url(api)
+        header = self.header()
+        data={'price': 0, 'orderQty': 1, 'type': 5, 'source': "1", 'symbol': "swap-usd-btc"}
+        res = self.run_main('post', url, data, header)
+        print('对手价平仓',res.text)
+        return res.json()
     def commonInfo(self):#获取指数价格标记价格
         api="contract/swap/contract/commonInfo/swap-usd-btc"
         url = self.get_url(api)
@@ -345,11 +361,12 @@ if __name__ == "__main__":
     run.uid='2195580'
     # user_ids = MySQLOperate("m_user").execute_sql("select user_id from m_user.us_user_baseinfo")
     # user_list=[]
-    run.price="9760.5"#下单价格
+    run.price="8061"#下单价格
     # run.orderQty=str(random.randint(1,9))#单数量
-    run.orderQty=1
+    run.orderQty=10
     run.symbol="swap-usd-btc"#币种对
-    run.position()
+
+
 
 
     # print('{:.8f}'.format(4.27167877E-8) ,4.27167877E-8/0.00010679)
