@@ -217,10 +217,10 @@ Library           ../../../testlib/service/common/RedisService.py
     [Return]    ${value}
 
 设置Redis指定键值
-    [Arguments]    ${alias}    ${name}    ${value}    ${toJson}=${False}    ${db}=0    ${ex}=${None}
-    ...    ${px}=${None}    ${nx}=${False}    ${xx}=${False}
-    ${res}    RedisService.set    ${alias}    ${name}    ${value}    ${db}    ${toJson}
-    ...    ${ex}    ${px}    ${nx}    ${xx}
+    [Arguments]    ${alias}    ${name}    ${value}
+
+    ${res}    RedisService.set    ${alias}    ${name}    ${value}
+
     [Return]    ${res}
 
 设置Redis哈希键值指定域

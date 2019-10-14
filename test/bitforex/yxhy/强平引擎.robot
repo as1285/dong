@@ -8,26 +8,26 @@ Library             DateTime
 
 *** Test Cases ***
 强平触发
-    ${res}    yxhy_api调用    user_yj1    /swap/position/swap-usd-btc
+    根据SQL进行查询   mysql       update p_perpetual.pp_assets set fixed_asset=0.1 where u_id=2195580
+    ${res}    yxhy_api调用    user_yj1    swap/position/swap-usd-btc
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${liquidationPrice}    set variable    ${res['data']['liquidationPrice']}
-    ${alias}   set variable    flagprince
-    ${name}        set variable        current
-    ${field}     set variable      perpetual
-    ${data}         set variable        ["java.math.BigDecimal",${liquidationPrice}]
-    ${db}       set variable            0
+    ${alias}    set variable    redis
+    ${name}        set variable        perpetual:swap-usd-btc_flag_price
+    ${data}        set variable       ["com.bitforex.perpetual.service.orderservice.vo.FlagPrice",{"symbol":"swap-usd-btc","fundRate":["java.math.BigDecimal",-0.003],"indexPrice":["java.math.BigDecimal",8356.79],"current":["java.math.BigDecimal",${liquidationPrice}-10],"flagPriceDiff":["java.math.BigDecimal",-19.69],"flagPriceDiffRate":["java.math.BigDecimal",-0.00235565],"quoteRate":["java.math.BigDecimal",0],"baseRate":["java.math.BigDecimal",0],"lastIndexPriceTime":1570873412919,"loanRate":["java.math.BigDecimal",0],"thirdPriceWeight":"BitStamp,25.00;GEMINI,25.00","nextFundTime":1570896000000}]
     ${toJson}   set variable
-    RedisService.hset   ${alias}    ${name}    ${field}    ${data}    ${db}    ${toJson}=${False}
+    设置Redis指定键值   ${alias}    ${name}      ${data}
     ${res}    yxhy_api调用    user_yj1    swap/account/sumFound
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
     should be equal as strings    ${code}    200
-    ${accb}    set variable    ${res['data']['accb']}
+    ${accb}    set variable    ${res['data']['accounts']['swap-usd-btc']['accb']}
     should be equal as strings    ${accb}       0
 
 
 最高限价
+    根据SQL进行查询   mysql       update p_perpetual.pp_assets set fixed_asset=0.1 where u_id=2195580
     ${side}    set variable    '1'
     ${res}     委托限价    ${side}
     ${price}    set variable    ${res}
@@ -88,7 +88,7 @@ Library             DateTime
     ${vol}    set variable    ${res['data']['currentPosition']}
     ${side}    set variable    ${res['data']['side']}
     ${liquidationPrice1}    set variable    ${res['data']['liquidationPrice']}
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_contract_config`
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_contract_config`
     ${r}    set variable    ${ret_mysql[0]['fee_rate_taker']}
     ${imr}    set variable    ${ret_mysql[0]['init_margins']}
     ${mmr}    set variable    ${ret_mysql[0]['maintenance_margins']}
@@ -108,13 +108,11 @@ Library             DateTime
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${liquidationPrice}    set variable    ${res['data']['liquidationPrice']}
-    ${alias}   set variable    flagprince
-    ${name}        set variable        current
-    ${field}     set variable      perpetual
-    ${data}         set variable        ["java.math.BigDecimal",${liquidationPrice}]
-    ${db}       set variable            0
+    ${alias}    set variable    redis
+    ${name}        set variable        perpetual:swap-usd-btc_flag_price
+    ${data}        set variable       ["com.bitforex.perpetual.service.orderservice.vo.FlagPrice",{"symbol":"swap-usd-btc","fundRate":["java.math.BigDecimal",-0.003],"indexPrice":["java.math.BigDecimal",8356.79],"current":["java.math.BigDecimal",${liquidationPrice}-10],"flagPriceDiff":["java.math.BigDecimal",-19.69],"flagPriceDiffRate":["java.math.BigDecimal",-0.00235565],"quoteRate":["java.math.BigDecimal",0],"baseRate":["java.math.BigDecimal",0],"lastIndexPriceTime":1570873412919,"loanRate":["java.math.BigDecimal",0],"thirdPriceWeight":"BitStamp,25.00;GEMINI,25.00","nextFundTime":1570896000000}]
     ${toJson}   set variable
-    RedisService.hset   ${alias}    ${name}    ${field}    ${data}    ${db}    ${toJson}=${False}
+    设置Redis指定键值   ${alias}    ${name}      ${data}
     ${res}    yxhy_api调用    user_yj1    swap/account/sumFound
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
@@ -145,13 +143,11 @@ Library             DateTime
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${liquidationPrice}    set variable    ${res['data']['liquidationPrice']}
-    ${alias}   set variable    flagprince
-    ${name}        set variable        current
-    ${field}     set variable      perpetual
-    ${data}         set variable        ["java.math.BigDecimal",${liquidationPrice}+100]
-    ${db}       set variable            0
+    ${alias}    set variable    redis
+    ${name}        set variable        perpetual:swap-usd-btc_flag_price
+    ${data}        set variable       ["com.bitforex.perpetual.service.orderservice.vo.FlagPrice",{"symbol":"swap-usd-btc","fundRate":["java.math.BigDecimal",-0.003],"indexPrice":["java.math.BigDecimal",8356.79],"current":["java.math.BigDecimal",${liquidationPrice}-10],"flagPriceDiff":["java.math.BigDecimal",-19.69],"flagPriceDiffRate":["java.math.BigDecimal",-0.00235565],"quoteRate":["java.math.BigDecimal",0],"baseRate":["java.math.BigDecimal",0],"lastIndexPriceTime":1570873412919,"loanRate":["java.math.BigDecimal",0],"thirdPriceWeight":"BitStamp,25.00;GEMINI,25.00","nextFundTime":1570896000000}]
     ${toJson}   set variable
-    RedisService.hset   ${alias}    ${name}    ${field}    ${data}    ${db}    ${toJson}=${False}
+    设置Redis指定键值   ${alias}    ${name}      ${data}
     ${res}    yxhy_api调用    user_yj1    swap/account/sumFound
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
@@ -163,13 +159,11 @@ Library             DateTime
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${liquidationPrice}    set variable    ${res['data']['liquidationPrice']}
-    ${alias}   set variable    flagprince
-    ${name}        set variable        current
-    ${field}     set variable      perpetual
-    ${data}         set variable        ["java.math.BigDecimal",${liquidationPrice}]
-    ${db}       set variable            0
+    ${alias}    set variable    redis
+    ${name}        set variable        perpetual:swap-usd-btc_flag_price
+    ${data}        set variable       ["com.bitforex.perpetual.service.orderservice.vo.FlagPrice",{"symbol":"swap-usd-btc","fundRate":["java.math.BigDecimal",-0.003],"indexPrice":["java.math.BigDecimal",8356.79],"current":["java.math.BigDecimal",${liquidationPrice}-10],"flagPriceDiff":["java.math.BigDecimal",-19.69],"flagPriceDiffRate":["java.math.BigDecimal",-0.00235565],"quoteRate":["java.math.BigDecimal",0],"baseRate":["java.math.BigDecimal",0],"lastIndexPriceTime":1570873412919,"loanRate":["java.math.BigDecimal",0],"thirdPriceWeight":"BitStamp,25.00;GEMINI,25.00","nextFundTime":1570896000000}]
     ${toJson}   set variable
-    RedisService.hset   ${alias}    ${name}    ${field}    ${data}    ${db}    ${toJson}=${False}
+    设置Redis指定键值   ${alias}    ${name}      ${data}
     ${res}    yxhy_api调用    user_yj1    swap/account/sumFound
     ${code}    set variable    ${res['code']}
     log    ${res['code']}

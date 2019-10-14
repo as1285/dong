@@ -349,7 +349,7 @@ if __name__ == "__main__":
     # run.orderQty=str(random.randint(1,9))#单数量
     run.orderQty=1
     run.symbol="swap-usd-btc"#币种对
-    run.position()
+    run.sumFound()
 
 
     # print('{:.8f}'.format(4.27167877E-8) ,4.27167877E-8/0.00010679)

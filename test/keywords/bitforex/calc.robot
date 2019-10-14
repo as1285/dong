@@ -413,11 +413,11 @@ Library             DateTime
      [Arguments]  ${id}
     [Documentation]  【功能】杠杆合约倍数配置
     ...
-    ...    【参数】${symbol}
+    ...    【参数】
     ...
     ...
     ...
     ...    【返回值】
     ...    result:
-    ${ret_mysql}    更新指定表中指定数据  update  pp_assets set fixed_asset=100 where u_id=${id}
+    ${ret_mysql}    根据SQL进行查询   mysql   update p_perpetual.pp_assets set fixed_asset=0.1 where u_id=${id}
     [Return]    ${ret_mysql}

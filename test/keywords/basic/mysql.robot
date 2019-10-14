@@ -46,7 +46,7 @@ Truncate数据表
     ...
     ...    【返回值】
     ...    data: 执行sql语句的返回信息
-    ${data}    MysqlService.execute_sql    ${alias}    ${sql}
+    ${data}    MysqlService.execute_sql    ${alias}     ${sql}
     [Return]    ${data}
 
 根据SQL进行查询

@@ -34,8 +34,8 @@ class RedisService:
     def get(self, alias, name, db=0, toDict=False):
         return ServiceRepository().get(alias).get(name, int(db), toDict)
 
-    def set(self, alias, name, value, db=0, toJson=False, ex=None, px=None, nx=False, xx=False):
-        return ServiceRepository().get(alias).set(name, value, int(db), ex, px, nx, xx, toJson)
+    def set(self, alias, name, value, db=0):
+        return ServiceRepository().get(alias).set(name, value, int(db))
 
     def hget(self, alias, name, field, db=0, toDict=False):
         return ServiceRepository().get(alias).hget(name, field, int(db), toDict)
