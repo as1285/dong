@@ -35,7 +35,7 @@ Library             DateTime
     ${source}    set variable    1
     ${symbol}    set variable   swap-usd-btc
     ${type}    set variable    ${1}
-    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post       orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
+    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post     transactionPin=""  orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
     should be equal as strings    ${code}    200
@@ -50,7 +50,7 @@ Library             DateTime
     ${source}    set variable    1
     ${symbol}    set variable   swap-usd-btc
     ${type}    set variable    ${1}
-    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post       orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
+    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post     transactionPin=""   orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
     should be equal as strings    ${code}    200
@@ -172,6 +172,8 @@ Library             DateTime
     should be equal as strings    ${accb}       0
     ${res}  根据买一价卖一价下单
     should be equal  ${res['data']}  '保证金不足'
+
+
 
 
 

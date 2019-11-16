@@ -421,3 +421,15 @@ Library             DateTime
     ...    result:
     ${ret_mysql}    根据SQL进行查询   mysql   update p_perpetual.pp_assets set fixed_asset=0.1 where u_id=${id}
     [Return]    ${ret_mysql}
+对手价下单
+     [Arguments]  ${side}   ${orderQty}
+    [Documentation]  对手价下单
+    ...
+    ...    【参数】
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${res}   duishoujia  ${side}   ${orderQty}
+    [Return]    ${res}

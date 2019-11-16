@@ -16,7 +16,7 @@ Library             DateTime
     ${orderQty}      set variable         1
     ${side}     set variable            1
     log    --loglevel DEBUG:DEBUG
-    ${res}    yxhy_api调用    user_yj1    swap/order     method=post      price=${price}     size=${size}    symbol=${symbol}    type=${type}   source=${source}      orderQty=${orderQty}  side=${side}
+    ${res}    yxhy_api调用    user_yj1    swap/order     method=post    transactionPin=""  price=${price}     size=${size}    symbol=${symbol}    type=${type}   source=${source}      orderQty=${orderQty}  side=${side}
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
     should be equal as strings    ${code}    200
@@ -229,6 +229,43 @@ Library             DateTime
     should be equal as strings    ${code}    200
     ${status}    set variable    ${res['data']['pageDate'][0]['status']}
     should be true     ${status}=4
+
+
+
+对手价下数量较大的订单，只成交了部分
+    ${side}         set variable     1
+    ${orderQty}    set variable     10000
+    ${res}    duishoujia        ${side}      ${orderQty}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${res}    yxhy_api调用         /contract/swap/position/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${availPosition}    set variable    ${res['data']['availPosition']}
+    should be true    ${availPosition}<${orderQty}
+    ${res}    yxhy_api调用         /contract/swap/order/list/swap-usd-btc
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${volume}    set variable    ${res['data']['pageDate'][0]['volume']}
+    should be true      ${volume}+${availPosition}=${orderQty}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
