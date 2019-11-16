@@ -18,7 +18,7 @@ Library             DateTime
     ${vol1}    set variable    ${res['data']['currentPosition']}
     ${orderQty}      set variable    ${200}
     ${price}    set variable            ${10378}
-    ${res}    下买单传参数        ${orderQty}     ${price}
+    ${res}    下单传参数     1        ${orderQty}     ${price}
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     should be true  ${res}
@@ -33,15 +33,15 @@ Library             DateTime
 开仓均价是否正确
     ${orderQty1}      set variable    ${200}
     ${price1}    set variable            ${10378}
-    ${res}    下买单传参数        ${orderQty1}     ${price1}
+    ${res}    下单传参数     1     ${orderQty1}     ${price1}
     ${code}    set variable    ${res['code']}
     ${orderQty2}      set variable    ${200}
     ${price2}    set variable            ${10378}
-    ${res}    下买单传参数        ${orderQty2}     ${price2}
+    ${res}    下单传参数     1      ${orderQty2}     ${price2}
     ${code}    set variable    ${res['code']}
     ${orderQty3}      set variable    ${200}
     ${price3}    set variable            ${10378}
-    ${res}    下买单传参数        ${orderQty3}     ${price3}
+    ${res}    下单传参数    1       ${orderQty3}     ${price3}
     ${code}    set variable    ${res['code']}
     ${res}    yxhy_api调用    user_yj1    /contract/swap/position/swap-usd-btc
     ${code}    set variable    ${res['code']}
@@ -84,7 +84,7 @@ Library             DateTime
 委托数量是否正确
     ${orderQty}      set variable    ${200}
     ${price}    set variable            ${10378}
-    ${res}    下买单传参数        ${orderQty}     ${price}
+    ${res}    下单传参数     1       ${orderQty}     ${price}
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${res}    委托数量
@@ -92,7 +92,7 @@ Library             DateTime
 委托价格是否正确
     ${orderQty}      set variable    ${200}
     ${price}    set variable            ${10378}
-    ${res}    下买单传参数        ${orderQty}     ${price}
+    ${res}    下单传参数     1        ${orderQty}     ${price}
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${res}    yxhy_api调用    user_yj1    contract/swap/order/list/swap-usd-btc
@@ -103,7 +103,7 @@ Library             DateTime
 成交数量是否正确
     ${orderQty}      set variable    ${200}
     ${price}    set variable            ${10378}
-    ${res}    下买单传参数        ${orderQty}     ${price}
+    ${res}    下单传参数     1       ${orderQty}     ${price}
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${res}    yxhy_api调用    user_yj1    contract/swap/order/list/swap-usd-btc
@@ -122,7 +122,7 @@ Library             DateTime
 成交价格是否显示正确
     ${orderQty}      set variable    ${200}
     ${price}    set variable            ${10378}
-    ${res}    下买单传参数        ${orderQty}     ${price}
+    ${res}    下单传参数     ${side}        ${orderQty}     ${price}
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${res}    yxhy_api调用    user_yj1    /contract/swap/order/trade/swap-usd-btc
@@ -140,7 +140,7 @@ Library             DateTime
     ${orderQty}      set variable    ${200}
     ${price}    set variable            获取指数价格
     ${margin}       set variable    ${res['data']['margin']}
-    ${res}          下买单传参数      ${price}
+    ${res}          下单传参数     1      ${price}
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
     should be equal as strings    ${code}    200
@@ -243,7 +243,7 @@ Library             DateTime
     should be equal   ${side}  1
     SHOULD BE EQUAL  ${currentPosition} 10000
     ${user_id}    获取user_id    user_yj1      select * from pp_order_btcusdt	 where 	uid=2195580
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where where uid=2195580 and id = ${orderid}'
+    ${ret_mysql}    根据SQL进行查询   mysql    select * from `p_perpetual`.`pp_order_btcusdt` where where uid=2195580 and id = ${orderid}'
     ${volume}    set variable    ${ret_mysql[0]['volume']}
     ${deal_volume}    set variable    ${ret_mysql[0]['deal_volume']}
     should be true  ${deal_volume} +${volume}=${orderQty}
@@ -264,10 +264,11 @@ Library             DateTime
     ${side}       set variable    ${res['data']['side']}
     should be equal   ${side}  1
     ${user_id}    获取user_id    user_yj1      select * from pp_order_btcusdt	 where 	uid=2195580
-    ${ret_mysql}    执行指定SQL语句并获取字典形式结果    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where where uid=2195580 and id = ${orderid}'
+    ${ret_mysql}    根据SQL进行查询   mysql    select * from `p_perpetual`.`pp_order_btcusdt` where where uid=2195580 and id = ${orderid}'
     ${volume}    set variable    ${ret_mysql[0]['volume']}
     ${deal_volume}    set variable    ${ret_mysql[0]['deal_volume']}
     should be true  ${deal_volume} +${volume}=${orderQty}
+
 
 
 

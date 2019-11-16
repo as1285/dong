@@ -1,17 +1,15 @@
 import requests
-from    encrypt_decrypt import  EncryptDecrypt
+from encrypt_decrypt import EncryptDecrypt
 import random
 from time import sleep
 import urllib3
-import redis
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from mysql_operate import  MySQLOperate
 class data_script:
 
     ROBOT_LIBRARY_SCOPE = "GLOBAL"
     def __init__(self):
         self.host = 'http://192.168.199.151/'
-        self.uid = None
+        self.uid = '2195580'
         self.symbol="swap-usd-btc"
         self.price=None
         self.orderQty=1
@@ -33,15 +31,6 @@ class data_script:
         user_id_hash = EncryptDecrypt().encrypt(self.uid)
         header["UserId"] = user_id_hash
         return header
-    def duishoujia(self,side,orderQty):#对手价下单
-        api = 'contract/swap/order'
-        url = self.get_url(api)
-        header = self.header()
-        data = {'symbol': "swap-usd-btc", 'side': side, 'source': "1", 'type': 2, 'orderQty': orderQty, 'price': 0,'transactionPin':"",}
-        res = self.run_main('post', url, data, header)
-        print('对手价下卖单',res.json(),data,url)
-        return res.json()
-
     def order_by_OP(self,side,orderQty,symbol):#根据买一价，卖一价下单
         api = '/contract/mkapi/v2/tickers'
         url = self.get_url(api)
@@ -55,7 +44,7 @@ class data_script:
         if side==2:
             price = res.json()["data"]["swap-usd-btc"]["low"]  # 卖一价
         api ='contract/swap/order'
-        data={"symbol": symbol, "side": side, "source": "1", "type": 1, "orderQty": orderQty, "price": price,'transactionPin':""}
+        data={"symbol": symbol, "side": side, "source": "1", "type": 1, "orderQty": orderQty, "price": price}
         url=self.get_url(api)
         res = self.run_main('get', url, data, header)
         print('根据买一价，卖一价下单',res.json(),data)
@@ -65,7 +54,7 @@ class data_script:
         api = 'contract/swap/order'
         url = self.get_url(api)
         header = self.header()
-        data = {"symbol": self.symbol, "side": 1, "source": "1", "type": 1, "orderQty": self.orderQty, "price": self.price,'transactionPin':""}
+        data = {"symbol": self.symbol, "side": 1, "source": "1", "type": 1, "orderQty": self.orderQty, "price": self.price}
         res = self.run_main('post', url, data, header)
         print('买单',res.text,data)
         return res.json()
@@ -73,7 +62,7 @@ class data_script:
         api = 'contract/swap/order'
         url = self.get_url(api)
         header = self.header()
-        data = {"symbol": self.symbol, "side": side, "source": "1", "type": 1, "orderQty": orderQty, "price": price,'transactionPin':""}
+        data = {"symbol": self.symbol, "side": side, "source": "1", "type": 1, "orderQty": orderQty, "price": price}
         res = self.run_main('post', url, data, header)
         print('买单',res.text,data)
         return res.json()
@@ -98,12 +87,11 @@ class data_script:
             self.orderQty = accb
 
         return self.order_by_flagPrice(side)
-
     def sell_order(self):#卖
         api = 'contract/swap/order'
         url = self.get_url(api)
         header = self.header()
-        data = {"symbol": self.symbol, "side": 2, "source": "1", "type": 1, "orderQty": self.orderQty, "price": self.price,'transactionPin':""}
+        data = {"symbol": self.symbol, "side": 2, "source": "1", "type": 1, "orderQty": self.orderQty, "price": self.price}
         res = self.run_main('post', url, data, header)
         print('卖单',res.text,data)
         return res.json()
@@ -224,7 +212,6 @@ class data_script:
                 self.delete_order_all()
 
 
-
     def ok_depth_get(self, symbol, size=10):
         url = 'https://www.okex.com/api/swap/v3/instruments/{0}-USD-SWAP/depth?size={1}'.format(symbol, size)
         req = requests.get(url, verify=False)
@@ -298,7 +285,7 @@ class data_script:
         header = self.header()
         data={}
         res = self.run_main('get', url, data, header)
-        # print('用户持仓列表',res.text)
+        print('用户持仓列表',res.text)
         return res.json()
     def commonInfo(self):#获取指数价格标记价格
         api="contract/swap/contract/commonInfo/swap-usd-btc"
@@ -351,69 +338,30 @@ class data_script:
         for i  in res.json()['data']:
             print(i)
         return res.json()
-    def qiangpingceshi(self):#200号强平测试
-        api = 'contract/swap/order'
-        url = self.get_url(api)
-        user_ids = MySQLOperate("m_user").execute_sql("select USER_ID from m_user.`us_user_baseinfo` where email like 'autotest%'")
-        for i in user_ids[1::]:
-            print(i)
-            self.uid = str(i['USER_ID'])
-            MySQLOperate("p_perpetual").execute_sql("update pp_assets set fixed_asset=0.0001 where u_id=%s"%self.uid)
-            header = self.header()
-            self.redis_price(7455)
-            data = {'symbol': "swap-usd-btc", 'side': 2, 'source': "1", 'type': 2, 'orderQty': 60, 'price': 0}
-            res = self.run_main('post', url, data, header)
-            print('对手价下卖单', res.json(), data, url)
-            print(self.position())
-            sleep(1)
-            liquidationPrice=self.position()['data']['liquidationPrice']
-            self.redis_price(liquidationPrice)
-            self.redis_price(7455)
 
-    def qiang(self):#强平检查
-        api = 'contract/swap/order'
-        url = self.get_url(api)
-        user_ids = MySQLOperate("m_user").execute_sql("select  * from us_user_baseinfo ORDER BY USER_ID  desc LIMIT 100")
-        users=[]
-        for i in user_ids[1::]:
-            self.uid = str(i['USER_ID'])
-            MySQLOperate("p_perpetual").execute_sql("update pp_assets set fixed_asset=0.0001 where u_id=%s"%self.uid)
-            # header = self.header()
-            # data = {'symbol': "swap-usd-btc", 'side': 2, 'source': "1", 'type': 2, 'orderQty': 60, 'price': 0}
-            # res = self.run_main('post', url, data, header)
-            # print('对手价下卖单', res.json(), data, url)
-            if self.position()['data']:
-                users.append(self.uid)
-        print(users)
-
-    def ga(self):
-        us = ['100000009', '100000008', '100000007', '100000006', '100000005', '100000004']
-        for uid in us:
-            self.uid=uid
-            print(uid,self.position())
-    def redis_price(self,liquidationPrice):#修改标记价格
-        pool = redis.ConnectionPool(host='192.168.199.113', port=6381, password='root6381', db=0)
-        r = redis.Redis(connection_pool=pool)
-        a=r.getset('perpetual:swap-usd-btc_flag_price',
-                       '["com.bitforex.perpetual.service.orderservice.vo.FlagPrice",{"symbol":"swap-usd-eos","fundRate":["java.math.BigDecimal",-0.003],"indexPrice":["java.math.BigDecimal",%s],"current":["java.math.BigDecimal",%s],"flagPriceDiff":["java.math.BigDecimal",-19.69],"flagPriceDiffRate":["java.math.BigDecimal",-0.00235565],"quoteRate":["java.math.BigDecimal",0],"baseRate":["java.math.BigDecimal",0],"lastIndexPriceTime":1570873412919,"loanRate":["java.math.BigDecimal",0],"thirdPriceWeight":"BitStamp,25.00;GEMINI,25.00;binance,25.00;","nextFundTime":1570896000000}]'%(liquidationPrice,liquidationPrice))
 if __name__ == "__main__":
     run = data_script()
     run.host = 'http://192.168.199.151/'
     run.uid='2195580'
-    # run.uid='100000002'
-    # run.orderQty=str(random.randint(1,9))
+    # user_ids = MySQLOperate("m_user").execute_sql("select user_id from m_user.us_user_baseinfo")
+    # user_list=[]
+    run.price="9760.5"#下单价格
+    # run.orderQty=str(random.randint(1,9))#单数量
+    run.orderQty=1
     run.symbol="swap-usd-btc"#币种对
-    run.redis_price(8745)
+    run.position()
 
 
-
-    # us = ['100000009', '100000008', '100000007', '100000006', '100000005', '100000004']
-    # for uid in us:
-    #     run.uid = uid
-    #     print(uid)
-    #     run.account()
-
-
-
-
+    # print('{:.8f}'.format(4.27167877E-8) ,4.27167877E-8/0.00010679)
+    # run.sellprice="10239"
+    # for i in user_ids[-20:-1]:
+    #     run.uid = str(i['user_id'])
+    #     print(run.uid)
+    #     MySQLOperate("p_perpetual").execute_sql("update  pp_assets set fixed_asset=10000 where u_id=%s" % run.uid)
+    #
+    #     n=10#下单次数
+    #     run.createdatalist(n)#跑单
+    # run.ok_depth_get('BTC')
+    # for i in range(n):#撤销全部订单
+    #     run.delete_order_all()
 

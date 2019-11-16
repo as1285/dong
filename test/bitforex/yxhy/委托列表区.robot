@@ -19,7 +19,7 @@ Library             DateTime
     should be true  ${res}
     ${orderQty}     ${price}   set variable    20
     ${price}    set variable        ${res}
-    ${res}  下买单传参数
+    ${res}  下单传参数     ${side}
     ${code}    set variable    ${res['code']}
     should be equal as strings    ${code}    200
     ${orderid}    set variable        ${res['data']}
