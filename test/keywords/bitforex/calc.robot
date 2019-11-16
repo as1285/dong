@@ -421,3 +421,31 @@ Library             DateTime
     ...    result:
     ${ret_mysql}    更新指定表中指定数据  update  pp_assets set fixed_asset=100 where u_id=${id}
     [Return]    ${ret_mysql}
+
+计算破产价格
+    [Arguments]         ${side}    ${HP}   ${Accb}    ${Vol}   ${IMR}
+    [Documentation]  【功能】计算破产价格
+    ...
+    ...    【参数】
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}  brp      ${side}    ${HP}   ${Accb}    ${Vol}   ${IMR}
+    [Return]    ${result}
+
+资金费用
+    [Arguments]       ${Vol}   ${flagPrice}    ${fundRate}
+    [Documentation]  【功能】计算破产价格
+    ...
+    ...    【参数】
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}  fundfee      ${Vol}   ${flagPrice}    ${fundRate}
+    [Return]    ${result}
+
+

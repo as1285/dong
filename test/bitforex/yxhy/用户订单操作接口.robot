@@ -81,7 +81,7 @@ Library             DateTime
     ${future}      set variable
     ${side}     set variable
     log    --loglevel DEBUG:DEBUG
-    ${res}    yxhy_api调用    user_yj1    swap/order     method=post      page=${page}     size=${size}    symbol=${symbol}    type=${type}   source=${source}      future=${future}  side=${side}
+    ${res}    yxhy_api调用    user_yj1    swap/order     method=post     transactionPin=""     page=${page}     size=${size}    symbol=${symbol}    type=${type}   source=${source}      future=${future}  side=${side}
     ${code}    set variable    ${res['code']}
     log    ${res['code']}
     should be equal as strings    ${code}    200
@@ -115,7 +115,7 @@ Library             DateTime
     ${source}    set variable    1
     ${symbol}    set variable    swap-usd-btc
     ${type}    set variable    ${1}
-    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post    future=${future}    orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
+    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post     transactionPin=""    future=${future}    orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
     should be equal as strings    ${res['code']}    200
     ${orderId}    set variable    ${res['data']}
     ${future}    set variable    ${0}
@@ -125,7 +125,7 @@ Library             DateTime
     ${source}    set variable    1
     ${symbol}    set variable    swap-usd-btc
     ${type}    set variable    ${1}
-    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post    future=${future}    orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
+    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post    transactionPin=""    future=${future}    orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
     should be equal as strings    ${res['code']}    200
     ${orderId}    set variable    ${res['data']}
 

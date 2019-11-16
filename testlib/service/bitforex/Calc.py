@@ -29,6 +29,7 @@ class Calc:
         self.symbol = "swap-usd-btc"
         self.MMR=0.005
         self.IMR=0.01
+
     def data_load(self,symbol):
         run=ExcelUtil()
         data=run.dict_data()
@@ -59,14 +60,24 @@ class Calc:
 
 
 
-    def brp(self, HP, R, Accb, Vol, S, IMR):  # 计算破产价格
-        brp_buy = HP * (R + 1) / (Accb * HP / Vol * S + (1 + IMR + R))
-        brp_sell = HP * (R - 1) / (Accb * HP / Vol * S + (IMR + R - 1))
-        return brp_buy, brp_sell
-    # def Brp(self):  # 计算破产价格
-    #     brp_buy = self.HP * (R + 1) / (self.Accb * self.HP / self.Vol * S + (1 + IMR + R))
-    #     brp_sell = self.HP * (R - 1) / (self.Accb * self.HP / self.Vol * S + (IMR + R - 1))
-        return brp_buy, brp_sell
+    def brp(self, side,HP, Accb, Vol,IMR):  # 计算破产价格
+        brp=0
+        if side == '1':
+            brp= HP * (0.0006 + 1) / (Accb * HP / Vol * 1 + (1 + IMR + 0.0006))
+        if side == '2':
+            brp = HP * (0.0006 - 1) / (Accb * HP / Vol * 1 + (IMR + 0.0006 - 1))
+        else:
+            print('仓位方向side错误')
+        return brp
+    def Brp(self,side):  # 计算破产价格
+        brp = 0
+        if side == '1':
+            brp = self.HP * (R + 1) / (self.Accb * self.HP / self.Vol * S + (1 + IMR + R))
+        if side == '2':
+            brp = self.HP * (R - 1) / (self.Accb * self.HP / self.Vol * S + (IMR + R - 1))
+        else:
+            print('仓位方向side错误')
+        return brp
 
     def cal_liqp(self, HP, R, Accb, Vol, SIDE):
         '''
@@ -114,7 +125,7 @@ class Calc:
         return self.Vol*S*IMR/self.HP + self.Vol*S*R/self.HP
 
     def maintenanceMargins(self):#维持保证金
-        print(self.Brp()[0],self.pv())
+        print(self.Brp('1'),self.pv())
         return  0.005 * self.pv()+feeRateTaker*self.Vol/self.OP#按照破产价格算的
     def BF(self):#预估手续费
         return 2*self.Vol * S *R/self.OP
@@ -164,8 +175,12 @@ class Calc:
 
 #资金费用
     def F(self):
-        return self.Vol*S*self.flagPrice()*self.fundRate
-#     #买方和卖方之间每隔 8 小时定期支付费用。 如果费率为正，多仓将支付 而 空仓将获得 资金费率，如果费率为负，则相反。 只有用户在资金时间戳时持有仓位，才需要支付或收取资金费用。
+        return self.Vol*self.flagPrice()*self.fundRate
+      #买方和卖方之间每隔 8 小时定期支付费用。 如果费率为正，多仓将支付 而 空仓将获得 资金费率，如果费率为负，则相反。 只有用户在资金时间戳时持有仓位，才需要支付或收取资金费用。
+    def fundfee(self,Vol,flagPrice,fundRate):
+        return Vol * flagPrice() * fundRate
+
+
 
 
 
