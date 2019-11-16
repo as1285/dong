@@ -162,7 +162,13 @@ class Calc:
         #标记价格*20>=卖价>=标记价格*（1- 价格下限百分比）
         # 如果委托是加仓方向，那么委托价格不能突破仓位强平价格。
 
-
+    def limit_price(self,side,flagPrice):
+        if side == '1':
+            return flagPrice(1 + 0.02)
+        elif side == '2':
+            return flagPrice(1 - 0.02)
+        else:
+            print('仓位方向side错误')
     def flagPrice(self):
         now = int(time.time())
         return self.indexPrice*(1+self.fundRate*(self.nextFundTime/1000-now) /float(8*3600))

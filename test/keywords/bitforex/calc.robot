@@ -437,7 +437,7 @@ Library             DateTime
 
 资金费用
     [Arguments]       ${Vol}   ${flagPrice}    ${fundRate}
-    [Documentation]  【功能】计算破产价格
+    [Documentation]  【功能】资金费用
     ...
     ...    【参数】
     ...
@@ -449,3 +449,31 @@ Library             DateTime
     [Return]    ${result}
 
 
+
+委托限价
+    [Arguments]       ${side}   ${flagPrice}
+    [Documentation]  【功能】委托限价
+    ...
+    ...    【参数】  委托价格跟当前标记价格偏差不能超过管理后台设置的限价百分比。
+
+    ...                  如果委托是减仓方向，那么委托价格不能突破仓位破产价格。
+    ...                     买价<=标记价格*（1 +价格上限百分比）
+    ...                 标记价格*20>=卖价>=标记价格*（1- 价格下限百分比）
+    ...                         如果委托是加仓方向，那么委托价格不能突破仓位强平价格。
+    ...    【返回值】
+    ...    result:
+    ${result}  limit_price      ${side}   ${flagPrice}
+    [Return]    ${result}
+
+资金费用
+    [Arguments]       ${uid}   ${amount}
+    [Documentation]  【功能】资金费用
+    ...
+    ...    【参数】
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}  create_coin       ${uid}   ${amount}
+    [Return]    ${result}

@@ -1,3 +1,4 @@
+import paramiko
 import requests
 from encrypt_decrypt import EncryptDecrypt
 import random
@@ -8,7 +9,7 @@ class data_script:
 
     ROBOT_LIBRARY_SCOPE = "GLOBAL"
     def __init__(self):
-        self.host = 'http://192.168.199.151/'
+        self.host = 'http://192.168.199.112/'
         self.uid = '2195580'
         self.symbol="swap-usd-btc"
         self.price=None
@@ -338,10 +339,50 @@ class data_script:
         for i  in res.json()['data']:
             print(i)
         return res.json()
+    def  create_coin(self,uid,amount):#增币
+        env = {
+            'test': {
+                'mysql': {'host': '192.168.199.119', 'user': 'java_w', 'password': 'N5OlsjNfmQZjJsn0'},
+                'redis': {'host': '192.168.199.113', 'password': 'root6381'},
+                'mq': {'host': '192.168.199.118', 'user': 'bitforex', 'password': 'bitforex',
+                       "install_path": "/export/servers/rocketmq-all-4.4.0-bin-release",
+                       "data_path": "/data/mq/rocketmq4.3/store"},
+                'match': {'host': '192.168.199.111', 'port': '8002', "install_path": "/export/App/match",
+                          'user': 'bitforex',
+                          'password': 'bitforex'}
+            },
+            'test130': {
+                'mysql': {'host': '192.168.199.139', 'user': 'java_w', 'password': 'YdPgL0KsyoXrW0yf'},
+                'redis': {'host': '192.168.199.133', 'password': 'root6381'},
+                'mq': {'host': '192.168.199.138', 'user': 'bitforex', 'password': 'bitforex',
+                       "install_path": "/export/servers/rocketmq-all-4.4.0-bin-release",
+                       "data_path": "/data/mq/rocketmq4.3/store"},
+                'match': {'host': '192.168.199.132', 'port': '8002', "install_path": "/export/App/match-perpetual",
+                          'user': 'bitforex', 'password': 'bitforex'}
+            }
+        }
+
+        env_dict = env.get('test')
+        env_match = env_dict.get('match')
+        match_host = env_match.get('host')
+        match_user = env_match.get('user')
+        match_password = env_match.get('password')
+        match_ssh_port = env_match.get('sshport', 22)
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(hostname=match_host, port=match_ssh_port, username=match_user, password=match_password)
+        for contractId in ['10002','10211','10003','10004','10257','10258']:
+            stdin, stdout, stderr = client.exec_command(
+                'curl "http://127.0.0.1:8080/swap/admin/transfer?amount=%s&contractId=%s&uid=%s"' %(amount,contractId,uid))
+            if stdout.channel.recv_exit_status() == 0:
+                print('%s%s增币成功' % (contractId,uid))
+            else:
+                print('%s%s增币失败' % (contractId,uid))
+        client.close()
 
 if __name__ == "__main__":
     run = data_script()
-    run.host = 'http://192.168.199.151/'
+    run.host = 'http://192.168.199.112/'
     run.uid='2195580'
     # user_ids = MySQLOperate("m_user").execute_sql("select user_id from m_user.us_user_baseinfo")
     # user_list=[]
