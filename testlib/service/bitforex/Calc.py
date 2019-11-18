@@ -121,8 +121,12 @@ class Calc:
         return self.Vol*S/self.HP
     def OV(self):#委托价值
         return self.Vol*S/self.HP #委托价格
+    def entrust_value(self ,Vol,HP):#委托价值
+        return  Vol/ HP
     def iniMargins(self):#起始保证金
         return self.Vol*S*IMR/self.HP + self.Vol*S*R/self.HP
+    def IniMargins(self,Vol,IMR,HP):#起始保证金
+        return Vol * IMR / HP + Vol * 0.0006 / HP
 
     def maintenanceMargins(self):#维持保证金
         print(self.Brp('1'),self.pv())
@@ -148,9 +152,9 @@ class Calc:
         # 委托保证金= self.iniMargins+预估手续费
         return self.iniMargins()+2*self.OV()*R
 
+    def Frozen(self):
 
-
-
+        pass
     def  ULP_LLP(self):#委托限价
             if  self.side=='1':
                 return self.flagPrice()(1+0.02)

@@ -8,34 +8,23 @@ Library           DateTime
 
 *** Test Cases ***
 下买单-撤单
-    ${future}    set variable    ${0}
-    ${orderQty}    set variable    ${1234}
-    ${price}    set variable    ${9380}
-    ${side}    set variable    ${1}
-    ${source}    set variable    1
-    ${symbol}    set variable    swap-usd-btc
-    ${type}    set variable    ${1}
-    ${transactionPin}    set variable    ${123456}
-    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post     transactionPin=${transactionPin}  future=${future}    orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
-    should be equal as strings    ${res['code']}    200
-    ${orderId}    set variable    ${res['data']}
-    ${res}    yxhy_api调用    user_yj1    /swap/order    method=delete    orderId=${orderId}    price=${price}    source=${source}    symbol=${symbol}
-    should be equal as strings    ${res['code']}    200
-
-下卖单-撤单
-    ${future}    set variable    ${0}
-    ${orderQty}    set variable    ${1234}
-    ${price}    set variable    ${9380}
-    ${side}    set variable    ${2}
-    ${source}    set variable    1
-    ${symbol}    set variable    swap-usd-btc
-    ${type}    set variable    ${1}
-    ${transactionPin}    set variable    ${123456}
-    ${res}    yxhy_api调用    user_yj1    /swap/order    method=post     transactionPin=${transactionPin}   future=${future}    orderQty=${orderQty}    price=${price}    side=${side}    source=${source}    symbol=${symbol}    type=${type}
-    should be equal as strings    ${res['code']}    200
-    ${orderId}    set variable    ${res['data']}
-    ${res}    yxhy_api调用    user_yj1    /swap/order    method=delete    orderId=${orderId}    price=${price}    source=${source}    symbol=${symbol}
-    should be equal as strings    ${res['code']}    200
-    log  --loglevel DEBUG:DEBUG
-
+    ${res}      yxhy_api调用    user_yj1        /contract/swap/contract/listAll
+    Log To Console      ${res['data']}
+    ${data}    set variable     ${res['data']}
+    Log To Console      ${data}
+    ${length}        get length     ${data}
+    :FOR    ${i}   IN RANGE  ${length}
+    \   ${symbol}    set variable    ${data}[${i}][symbol]
+    \   ${res}     根据买一价卖一价下单     1    123    ${data}[${i}][symbol]
+    \   ${code}    set variable    ${res['code']}
+    \   log    ${res['code']}
+    \   should be equal as strings    ${code}    200
+    \   ${res}    yxhy_api调用    user_yj1    /contract/swap/order/all   method=delete     symbol=${symbol}    source=1
+    \   ${code}    set variable    ${res['code']}
+    \   log    ${res['code']}
+    \   should be equal as strings    ${code}    200
+    \   ${res}    yxhy_api调用    user_yj1    /contract/swap/order/list/${symbol}
+    \   ${code}    set variable    ${res['code']}
+    \   log    ${res['code']}
+    \   should be equal as strings    ${code}    200
 

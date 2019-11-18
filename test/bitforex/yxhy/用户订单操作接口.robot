@@ -35,76 +35,6 @@ Library             DateTime
 
     should be equal as strings    ${code}    200
 
-撤销订单
-    ${res}    yxhy_api调用    user_yj1    /contract/swap/order/list/swap-usd-btc
-
-    ${code}    set variable    ${res['code']}
-
-    should be equal as strings    ${code}    200
-
-    ${price}    set variable       ${res['data']['pageData'][0]['prince']}
-    ${volume}    set variable       ${res['data']['pageData'][0]['volume']}
-    ${orderId}    set variable       ${res['data']['pageData'][0]['entrustId']}
-    ${symbol}    set variable         swap-usd-btc
-    ${source}   set variable            1
-    ${res}    yxhy_api调用    user_yj1    swap/order   method=delete  orderId=${orderId}     price=${price}    symbol=${symbol}    source=${source}
-    ${code}    set variable    ${res['code']}
-    log    ${res['code']}
-    should be equal as strings    ${code}    200
-
-    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where id='${orderId}'
-    ${status}    set variable    ${ret_mysql[0]['status']}
-    ${price1}   set variable    ${ret_mysql[0]['price']}
-    ${volume1}   set variable    ${ret_mysql[0]['volume']}
-    should be equal  ${status}   4
-    should be equal  ${price1}   ${price}
-    should be equal  ${volume1}    ${volume}
-
-撤销全部订单
-    ${symbol}    set variable       swap-usd-btc
-    ${source}   set variable        1
-    ${res}    yxhy_api调用    user_yj1    /contract/swap/order/all   method=delete     symbol=${symbol}    source=${source}
-    ${code}    set variable    ${res['code']}
-    log    ${res['code']}
-    should be equal as strings    ${code}    200
-    ${res}    yxhy_api调用    user_yj1    /contract/swap/order/list/swap-usd-btc
-    ${code}    set variable    ${res['code']}
-    should be equal as strings    ${code}    200
-    ${source}    set variable
-
-批量下单
-    ${page}    set variable
-    ${size}    set variable
-    ${symbol}    set variable
-    ${type}    set variable
-    ${source}     set variable
-    ${future}      set variable
-    ${side}     set variable
-    log    --loglevel DEBUG:DEBUG
-    ${res}    yxhy_api调用    user_yj1    swap/order     method=post     transactionPin=""     page=${page}     size=${size}    symbol=${symbol}    type=${type}   source=${source}      future=${future}  side=${side}
-    ${code}    set variable    ${res['code']}
-    log    ${res['code']}
-    should be equal as strings    ${code}    200
-批量撤单
-
-    ${orderIds}    set variable     委托列表获取订单ID集合
-
-    ${symbol}    set variable     swap-usd-btc
-    ${source}   set variable    1
-    ${res}    yxhy_api调用    user_yj1    swap/order/batch/   method=delete  orderId=${orderIds}        symbol=${symbol}    source=${source}
-
-    ${code}    set variable    ${res['code']}
-    log    ${res['code']}
-    should be equal as strings    ${code}    200
-    ${orderId}    set variable   ${none}
-    evaluate  for ${orderId} in ${orderIds}
-
-        ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_order_btcusdt` where id='${orderId}'
-        ${status}    set variable    ${ret_mysql[0]['status']}
-
-        should be equal  ${status}   4
-
-
 
 平仓
 
@@ -274,7 +204,7 @@ Library             DateTime
     ${volume}    set variable    ${res['data']['pageDate'][0]['volume']}
     should be true      ${volume}+${availPosition}=${orderQty}
 
-对手价下
+
 
 
 

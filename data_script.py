@@ -40,12 +40,12 @@ class data_script:
         res = self.run_main('get', url, data, header)
         print(res.json())
         price=0
-        if side==1:
+        if side=='1':
             price = res.json()["data"]["swap-usd-btc"]["high"]  # 卖一价
-        if side==2:
+        if side=='2':
             price = res.json()["data"]["swap-usd-btc"]["low"]  # 卖一价
         api ='contract/swap/order'
-        data={"symbol": symbol, "side": side, "source": "1", "type": 1, "orderQty": orderQty, "price": price}
+        data={'transactionPin' :"123456","symbol": symbol, "side": side, "source": "1", "type": 1, "orderQty": orderQty, "price": price}
         url=self.get_url(api)
         res = self.run_main('get', url, data, header)
         print('根据买一价，卖一价下单',res.json(),data)
@@ -115,21 +115,32 @@ class data_script:
         print(res.text)
         return res.json()
 
-    def batch_order(self):#批量下单
+    def batch_order(self,orderQty,price,side,symbol,num):#批量下单
         api = 'contract/swap/order/batch'
         url = self.get_url(api)
         header = self.header()
         data = [
             {
                 "future": 0,
-                "orderQty": self.orderQty,
-                "price": self.price,
-                "side": 1,
+                "orderQty": orderQty,
+                "price": price,
+                "side": side,
                 "source": "1",
-                "symbol": self.symbol,
+                "symbol": symbol,
                 "type": 1
             }
         ]
+        datas = {
+                "future": 0,
+                "orderQty": orderQty,
+                "price": price,
+                "side": side,
+                "source": "1",
+                "symbol": symbol,
+                "type": 1
+            }
+        for i  in range(num):
+            data.append(datas)
         res = self.run_main('post', url, data, header)
         print(res.text,data)
         return res.json()
@@ -137,7 +148,7 @@ class data_script:
         api = 'contract/swap/order/batch'
         url = self.get_url(api)
         header = self.header()
-        orderIds=self.batch_order()['data']
+        orderIds=self.batch_order(1,10)['data']
         data = {
             "orderIds": [],
             "source": "1",
@@ -339,6 +350,17 @@ class data_script:
         for i  in res.json()['data']:
             print(i)
         return res.json()
+    def get_coin_info(self):#获取币对信息
+        api='contract/swap/contract/listAll'
+        url = self.get_url(api)
+        header = self.header()
+        data={}
+        res = self.run_main('get', url, data, header)
+        coin_info=[]
+        for i in res.json()['data']:
+            coin_info.append(i['symbol'])
+        return coin_info
+
     def  create_coin(self,uid,amount):#增币
         env = {
             'test': {
@@ -399,7 +421,6 @@ if __name__ == "__main__":
     #     run.uid = str(i['user_id'])
     #     print(run.uid)
     #     MySQLOperate("p_perpetual").execute_sql("update  pp_assets set fixed_asset=10000 where u_id=%s" % run.uid)
-    #
     #     n=10#下单次数
     #     run.createdatalist(n)#跑单
     # run.ok_depth_get('BTC')

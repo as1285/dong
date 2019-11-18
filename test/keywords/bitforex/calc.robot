@@ -409,20 +409,8 @@ Library             DateTime
     ...    result:
     ${result}  get_orderids
     [Return]    ${result}
-账号初始化，增币
-     [Arguments]  ${id}
-    [Documentation]  【功能】杠杆合约倍数配置
-    ...
-    ...    【参数】${symbol}
-    ...
-    ...
-    ...
-    ...    【返回值】
-    ...    result:
-    ${ret_mysql}    更新指定表中指定数据  update  pp_assets set fixed_asset=100 where u_id=${id}
-    [Return]    ${ret_mysql}
 
-计算破产价格
+计算破产价格1
     [Arguments]         ${side}    ${HP}   ${Accb}    ${Vol}   ${IMR}
     [Documentation]  【功能】计算破产价格
     ...
@@ -450,7 +438,7 @@ Library             DateTime
 
 
 
-委托限价
+委托限价1
     [Arguments]       ${side}   ${flagPrice}
     [Documentation]  【功能】委托限价
     ...
@@ -465,9 +453,9 @@ Library             DateTime
     ${result}  limit_price      ${side}   ${flagPrice}
     [Return]    ${result}
 
-资金费用
+账号初始化，增币
     [Arguments]       ${uid}   ${amount}
-    [Documentation]  【功能】资金费用
+    [Documentation]  【功能】账号初始化，增币
     ...
     ...    【参数】
     ...
@@ -476,4 +464,16 @@ Library             DateTime
     ...    【返回值】
     ...    result:
     ${result}  create_coin       ${uid}   ${amount}
+    [Return]    ${result}
+批量下单接口
+    [Arguments]       ${orderQty}       ${price}    ${side}     ${symbol}       ${num}
+    [Documentation]  【功能】批量下单
+    ...
+    ...    【参数】
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}  batch_order       ${orderQty}       ${price}    ${side}     ${symbol}       ${num}
     [Return]    ${result}
