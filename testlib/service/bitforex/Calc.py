@@ -9,7 +9,7 @@ MMR=0
 IMR=0
 # IMR = 0.02=风险限额等级*0.01=RL*0.01 #起始保证金率
 # MMR = 0.005 #维持保证金率
-from testlib.conf.readexcel import ExcelUtil
+
 class Calc:
 
 
@@ -29,35 +29,6 @@ class Calc:
         self.symbol = "swap-usd-btc"
         self.MMR=0.005
         self.IMR=0.01
-
-    def data_load(self,symbol):
-        run=ExcelUtil()
-        data=run.dict_data()
-        data_btc=data[0:10]
-        data_eth=data[11:20]
-        data_ltc=data[21:30]
-        data_xrp=data[31:40]
-        data_grin=data[41:50]
-        if symbol=="swap-usd-btc":
-            return data_btc
-        if symbol=="swap-usd-eth":
-            return data_eth
-        if symbol=="swap-usd-ltc":
-            return data_ltc
-        if symbol=="swap-usd-xrp":
-            return data_xrp
-        if symbol=="swap-usd-grin":
-            return data_grin
-    def data(self,symbol,vol):#从Exce表里获取数据
-        datas=self.data_load(symbol)
-        for data in datas:
-            vol_num=data['合约数量'].split('-')[-1]
-            if  vol<=vol_num:
-                self.MMR=data['MMR']
-                self.IMR = data['IMR']
-                break
-            return data
-
 
 
     def brp(self, side,HP, Accb, Vol,IMR):  # 计算破产价格
@@ -108,9 +79,6 @@ class Calc:
             result = HP * (R - 1) / (Accb * HP / Vol * S + (IMR + R - 1 - MMR))
         print('强平价格=',result)
         return float(result)
-
-    # def Accb(self):
-    #     return self.unrealisedPNL()
     def unrealisedPNL(self,side,Vol,HP,FP):#未实现盈亏
         print(type(HP),type(Vol),type(FP),type(S))
         if side=='1':#买
@@ -125,7 +93,7 @@ class Calc:
         return  Vol/ HP
     def iniMargins(self):#起始保证金
         return self.Vol*S*IMR/self.HP + self.Vol*S*R/self.HP
-    def IniMargins(self,Vol,IMR,HP):#起始保证金
+    def IniMargins1(self,Vol,IMR,HP):#起始保证金
         return Vol * IMR / HP + Vol * 0.0006 / HP
 
     def maintenanceMargins(self):#维持保证金
@@ -152,7 +120,7 @@ class Calc:
         # 委托保证金= self.iniMargins+预估手续费
         return self.iniMargins()+2*self.OV()*R
 
-    def Frozen(self):
+    def Frozen1(self):
 
         pass
     def  ULP_LLP(self):#委托限价
@@ -192,11 +160,11 @@ class Calc:
 
 
 
-
-
-
 # 可用保证金（AM）=账户余额 - 起始仓位保证金- 委托保证金 =》    AM= AccB - IPM - OM
 # 做多的未实现盈亏为 Unrealised_PNL1 = float(Vol*S*(1/HP - 1/FP))
 # 做空的未实现盈亏为 Unrealised_PNL2 = float(Vol*S*(1/FP - 1/HP))
 # 做多的[仓位]中的[保证金]=仓位保证金 + 账户余额抵扣不足的浮动亏损     =》PM1=IPM + Min(0,(AccB - OM - IPM)*1 + Min(0, Unrealised_PNL1)    （亏损权重为1）
 # 做空的[仓位]中的[保证金]=仓位保证金 + 账户余额抵扣不足的浮动亏损     =》PM1=IPM + Min(0,(AccB - OM - IPM)*1 + Min(0, Unrealised_PNL2)
+if __name__=="__main__":
+    run=Calc()
+    print(run.IniMargins1(2,0.05,14.29))

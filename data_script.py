@@ -22,15 +22,16 @@ class data_script:
 
     def header(self):
         header = {'accept': 'application/json',
-                  'Host': '192.168.199.151',
+                  'Host': '192.168.199.112',
                   'accept-encoding': 'gzip, deflate',
                   'accept-charset': 'UTF-8,*;q=0.5',
-                  "Referer": "http://192.168.199.151/cn/userCenter/userBfToken",
+                  "Referer": "http://192.168.199.112/cn/userCenter/userBfToken",
                   "user-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
                   "cookies": 'secure=true; HttpOnly=true; gr_user_id=d5d78f94-5aba-4f32-863b-e34d42a425b1; grwng_uid=4679ba99-8f67-4c8e-9b08-78ed4dadc373; _hjid=ed556ba2-6ee5-42ab-ba01-f1e1c2bf5916; lang=cn; hideLanguageSelect=true; JSESSIONID=575527F064166053A3583037AAB1D44B-n1; 945b4bd5a264805a_gr_session_id=d023f20d-9444-41db-a6a2-e2657fd117a0; 945b4bd5a264805a_gr_session_id_d023f20d-9444-41db-a6a2-e2657fd117a0=true; valuationCurrency=CNY; valuationSymbol=%A5; _ga=GA1.1.718150525.1565837257; _gid=GA1.1.586740127.1565837257',
-                  }
+                   }
         user_id_hash = EncryptDecrypt().encrypt(self.uid)
         header["UserId"] = user_id_hash
+        print(header)
         return header
     def order_by_OP(self,side,orderQty,symbol):#根据买一价，卖一价下单
         api = '/contract/mkapi/v2/tickers'
@@ -347,9 +348,30 @@ class data_script:
         data={}
         res = self.run_main('get', url, data, header)
         print('合约所以币对信息',res.text)
+        coin={}
         for i  in res.json()['data']:
-            print(i)
+            coin[i['id']]=i['symbol']
+        print(coin)
         return res.json()
+    def agree(self):#同意协议
+        api='swap/account/agreement'
+        url = self.get_url(api)
+        header = self.header()
+        data = {}
+        res = self.run_main('get', url, data, header)
+        print('同意协议', res.text)
+    def activityCoin(self):#空投
+        api='/swap/admin/activityCoin'
+        url = self.get_url(api)
+        header = self.header()
+        data = {
+	"activityId": "1",
+	"amount": "1",
+	"contractId": "10002",
+            "uid":"2188420"
+}
+        res = self.run_main('get', url, data, header)
+        print('空投', res.text)
     def get_coin_info(self):#获取币对信息
         api='contract/swap/contract/listAll'
         url = self.get_url(api)
@@ -405,14 +427,14 @@ class data_script:
 if __name__ == "__main__":
     run = data_script()
     run.host = 'http://192.168.199.112/'
-    run.uid='2195580'
+    run.uid='1700257'
     # user_ids = MySQLOperate("m_user").execute_sql("select user_id from m_user.us_user_baseinfo")
     # user_list=[]
     run.price="9760.5"#下单价格
     # run.orderQty=str(random.randint(1,9))#单数量
     run.orderQty=1
     run.symbol="swap-usd-btc"#币种对
-    run.position()
+    run.listAll()
 
 
     # print('{:.8f}'.format(4.27167877E-8) ,4.27167877E-8/0.00010679)

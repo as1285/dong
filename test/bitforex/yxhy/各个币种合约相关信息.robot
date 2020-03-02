@@ -125,8 +125,51 @@ Library             DateTime
     ${message}    set variable    ${res['message']}
     should be equal as strings      ${message}     '下单数量不合法'
 
+修改合约杠杆后下单
+     ${symbol1}       set variable      swap-usd-btc
+     ${ret_mysql}            杠杆合约倍数配置       ${symbol1}
+     ${min_volume}       set variable        ${ret_mysql[0]['min_volume']}
+     ${max_volume}       set variable        ${ret_mysql[0]['max_volume']}
+     ${init_margins}       set variable        ${ret_mysql[0]['init_margins']}
+     ${maintenance_margins}       set variable        ${ret_mysql[0]['maintenance_margins']}
+     ${max_user_leverage}       set variable        ${ret_mysql[0]['max_user_leverage']}
+     ${res}    yxhy_api调用    user_yj1    swap/contract/listAll
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${orderQty}      set variable    ${res['data'][0]['maxOrderVolume']}+1
+    ${price}        set variable    获取指数价格
+    ${res}          下单传参数       1      ${orderQty}     ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${message}    set variable    ${res['message']}
+    should be equal as strings      ${message}     '下单数量不合法'
 
+合约最大持仓量下单
+    ${res}    yxhy_api调用    user_yj1    contract/swap/contract/listAll
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
 
+    ${symbol1}       set variable     ${res['data'][0]['symbol']}
+    ${maxOrderVolume1}            set variable     ${res['data'][0]['maxOrderVolume']}
+
+    ${leverageLevel1}            set variable     ${res['data'][0]['leverageLevel']}
+
+    ${ret_mysql}    根据SQL进行查询    mysql    select * from `p_perpetual`.`pp_contract_risk_level_config ` where symbol='${symbol1} ' and max_user_leverage='${leverageLevel1}'
+    ${max_volume}    set variable    ${ret_mysql[0]['max_volume']}
+
+    should be equal   ${max_volume}         ${maxOrderVolume1}
+    should be equal as strings    ${code}    200
+    ${orderQty}      set variable    ${res['data'][0]['maxOrderVolume']}+1
+    ${price}        set variable    获取指数价格
+    ${res}          下单传参数       1      ${orderQty}     ${price}
+    ${code}    set variable    ${res['code']}
+    log    ${res['code']}
+    should be equal as strings    ${code}    200
+    ${message}    set variable    ${res['message']}
+    should be equal as strings      ${message}     '下单数量不合法'
 
 
 

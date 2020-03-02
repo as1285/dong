@@ -57,4 +57,21 @@ yyhy_获取参数
     ${ret_mysql}    根据SQL进行查询    mysql    select user_id from `m_user`.`us_user_baseinfo` where email='${user}'
     ${user_id}    set variable    ${ret_mysql[0]['user_id']}
     [Return]    ${user_id}
+获取用户资产
+    [Arguments]    ${alias}
+    [Documentation]    【功能】获取env.json中key对应的值
+    ...
+    ...
+    ...    【参数】
+    ...    key: env.json中key
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    res：key对应的value
 
+
+    ${user}    yyhy_获取参数   ${alias}    user
+    ${ret_mysql}    根据SQL进行查询    mysql    select user_id from `m_user`.`us_user_baseinfo` where email='${user}'
+    ${user_id}    set variable    ${ret_mysql[0]['user_id']}
+    [Return]    ${user_id}

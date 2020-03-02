@@ -477,3 +477,17 @@ Library             DateTime
     ...    result:
     ${result}  batch_order       ${orderQty}       ${price}    ${side}     ${symbol}       ${num}
     [Return]    ${result}
+
+起始保证金
+IniMargins1(self,Vol,IMR,HP):#起始保证金
+    [Arguments]       ${Vol}       ${IMR}    ${HP}
+    [Documentation]  【功能】起始保证金
+    ...
+    ...    【参数】起始保证金率  ${IMR}
+    ...
+    ...
+    ...
+    ...    【返回值】
+    ...    result:
+    ${result}  batch_order      ${Vol}       ${IMR}    ${HP}
+    [Return]    ${result}
